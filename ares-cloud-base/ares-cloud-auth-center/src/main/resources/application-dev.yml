@@ -4,7 +4,7 @@ spring:
       database: 1
       host: localhost
       port: 6379
-      password: "123456"
+      password: "LZLlzl12345"
       timeout: 6000ms  # 连接超时时长（毫秒）
   cloud:
     nacos:
@@ -12,3 +12,22 @@ spring:
         server-addr: localhost:18848 # Nacos 服务地址
         username: nacos
         password: nacos
+        enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
+        namespace: public  # 命名空间，确保与 base-service 一致
+        group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
+    # LoadBalancer 配置（用于服务发现）
+    loadbalancer:
+      retry:
+        enabled: true  # 启用重试
+    # Feign 客户端配置
+    openfeign:
+      client:
+        config:
+          # user-service 服务名配置（作为备用）
+          user-service:
+            connectTimeout: 10000
+            readTimeout: 60000
+          # 全局默认配置（如果没有指定特定服务的配置，使用这些默认值）
+          default:
+            connectTimeout: 10000  # 默认连接超时时间（毫秒）
+            readTimeout: 60000    # 默认读取超时时间（毫秒），增加到 6 秒

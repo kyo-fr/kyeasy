@@ -1,19 +1,48 @@
 spring:
+  data:
+    redis:
+      database: 1
+      host: localhost
+      port: 6379
+      password: "LZLlzl12345"
+      timeout: 6000ms  # 连接超时时长（毫秒）
   cloud:
     nacos:
       discovery:
         server-addr: localhost:18848 # Nacos 服务地址
         username: nacos
         password: nacos
+        enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
+        namespace: public  # 命名空间，确保与 base-service 一致
+        group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
       config:
         server-addr: localhost:18848  # Nacos 配置中心地址
         file-extension: yaml          # 配置文件格式
-        group: DEFAULT_GROUP          # 配置组名
+        group: public          # 配置组名
         namespace: public             # 配置的命名空间
         import-check:
           enabled: false
         username: nacos
         password: nacos
+        enabled: true  # 启用配置中心，如果 Nacos 不可用，可以设置为 false 禁用
+        refresh-enabled: true  # 启用配置刷新
+    # LoadBalancer 配置（用于服务发现）
+    loadbalancer:
+      retry:
+        enabled: true  # 启用重试
+    # Feign 客户端配置
+    openfeign:
+      client:
+        config:
+          # base-service 的 Feign 客户端配置
+          base-service:
+            # 移除 url 配置，使用服务发现从 Nacos 中查找 base-service 服务
+            connectTimeout: 5000  # 连接超时时间（毫秒）
+            readTimeout: 10000    # 读取超时时间（毫秒）
+          ares-cloud-auth-center:
+            # 移除 url 配置，使用服务发现从 Nacos 中查找 ares-cloud-auth-center 服务
+            connectTimeout: 5000  # 连接超时时间（毫秒）
+            readTimeout: 10000    # 读取超时时间（毫秒）
   datasource:
     url: jdbc:oracle:thin:@test1_medium
     username: admin
@@ -41,6 +70,14 @@ logging:
     org.apache.ibatis.executor: debug             # 打印 SQL 执行的日志
     com.baomidou.mybatisplus: debug
     org.apache.ibatis: debug
+    # Feign 和 LoadBalancer 调试日志
+    org.springframework.cloud.openfeign: debug  # Feign 客户端调试日志
+    org.springframework.cloud.loadbalancer: debug  # LoadBalancer 调试日志
+    org.springframework.cloud.nacos.discovery: debug  # Nacos 服务发现调试日志
+    feign: debug  # Feign 框架调试日志
+    # Nacos 客户端日志（用于排查服务发现问题）
+    com.alibaba.nacos: info  # Nacos 客户端日志
+    com.alibaba.cloud.nacos: info  # Spring Cloud Alibaba Nacos 日志
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 和参数

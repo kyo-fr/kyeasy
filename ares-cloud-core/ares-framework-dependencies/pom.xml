@@ -44,6 +44,11 @@
         <jaxb-runtime.version>2.3.3</jaxb-runtime.version>
 
         <braintree.version>3.67.0</braintree.version>
+        <oci-java-sdk.version>3.45.0</oci-java-sdk.version>
+        <jersey.version>2.40</jersey.version>
+        <jaxrs-api.version>2.1.1</jaxrs-api.version>
+        <jakarta-inject.version>2.0.1</jakarta-inject.version>
+        <hk2.version>2.6.1</hk2.version>
     </properties>
 
     <dependencyManagement>
@@ -336,6 +341,87 @@
                 <groupId>org.ares.cloud</groupId>
                 <artifactId>ares-framework-starter-oracle-wallet</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <!-- Oracle OCI SDK for HSM/KMS -->
+            <dependency>
+                <groupId>com.oracle.oci.sdk</groupId>
+                <artifactId>oci-java-sdk-keymanagement</artifactId>
+                <version>${oci-java-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.oci.sdk</groupId>
+                <artifactId>oci-java-sdk-common</artifactId>
+                <version>${oci-java-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle.oci.sdk</groupId>
+                <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+                <version>${oci-java-sdk.version}</version>
+            </dependency>
+            <!-- JAX-RS API (required by Jersey HTTP client for OCI SDK) -->
+            <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${jaxrs-api.version}</version>
+            </dependency>
+            <!-- Jersey Client (required by OCI SDK Jersey HTTP provider) -->
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <!-- Jakarta Inject API (required by Jersey HTTP client for OCI SDK) -->
+            <dependency>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${jakarta-inject.version}</version>
+            </dependency>
+            <!-- Jersey Media JSON Jackson (required for JSON serialization) -->
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <!-- Jersey HK2 Integration (required for dependency injection) -->
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <!-- HK2 API (required by Jersey HK2 integration) -->
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-api</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <!-- HK2 Locator (required by Jersey HK2 integration) -->
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-locator</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <!-- HK2 Utils (required by Jersey HK2 integration) -->
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-utils</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <!-- Jersey Apache Connector (required by OCI SDK, use correct version) -->
+            <dependency>
+                <groupId>org.glassfish.jersey.connectors</groupId>
+                <artifactId>jersey-apache-connector</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <!-- Apache HttpClient (required by Jersey Apache Connector) -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.14</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

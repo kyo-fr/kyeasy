@@ -22,6 +22,8 @@ import java.util.Map;
 public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate template) {
+        // 设置 Accept 头，确保服务器返回 JSON 格式
+        template.header(HttpHeaders.ACCEPT, "application/json");
         // 将 JWT token 放入 Authorization 请求头中
         template.header(HttpHeaders.AUTHORIZATION, Constants.TOKEN_PREFIX + ApplicationContext.getToken());
         //用户id

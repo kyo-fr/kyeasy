@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  * @description: TODO
  * @date 2024/9/23 17:06
  */
-@FeignClient(name = "ares-cloud-auth-center",fallback = AuthServerClientFallback.class)
+@FeignClient(name = "ares-cloud-auth-center", contextId = "authServerClient", fallback = AuthServerClientFallback.class)
 public interface AuthServerClient {
     /**
      * 验证token

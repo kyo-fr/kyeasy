@@ -7,6 +7,7 @@ import org.ares.cloud.api.user.dto.RecoverPasswordRequest;
 import org.ares.cloud.api.user.dto.UserDto;
 import org.ares.cloud.exception.RpcCallException;
 import org.ares.cloud.user.service.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class UserInternalController {
      * @return 用户
      */
     @Hidden
-    @GetMapping("get_and_chick_account")
+    @GetMapping(value = "get_and_chick_account", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto loadAndChickPassword(@RequestParam("account") String account,@RequestParam("password") String password){
         return userService.loadAndChickPassword(account,password);
     }

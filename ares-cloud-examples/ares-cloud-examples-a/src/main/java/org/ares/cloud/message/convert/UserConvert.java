@@ -39,10 +39,6 @@ public interface UserConvert {
     * @return 数据传输对象。
     */
     @InheritConfiguration(name = "toBaseDto")
-    @Mapping(target = "phone", source = "phone")
-    @Mapping(target = "countryCode", source = "countryCode")
-    @Mapping(target = "account", source = "account")
-    @Mapping(target = "nickname", source = "nickname")
     UserDto toDto(UserEntity entity);
 
     /**
@@ -60,10 +56,6 @@ public interface UserConvert {
     * @return 实体。
     */
     @InheritConfiguration(name = "toBaseEntity")
-    @Mapping(target = "phone", source = "phone")
-    @Mapping(target = "countryCode", source = "countryCode")
-    @Mapping(target = "account", source = "account")
-    @Mapping(target = "nickname", source = "nickname")
     UserEntity toEntity( UserDto dto);
 
     /**

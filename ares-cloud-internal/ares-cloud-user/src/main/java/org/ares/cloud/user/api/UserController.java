@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.ares.cloud.api.user.dto.UserDto;
 import org.ares.cloud.api.user.enums.UserIdentity;
 import org.ares.cloud.common.context.ApplicationContext;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user/v1/users")
 @Tag(name="用户")
-@AllArgsConstructor
 public class UserController {
     @Resource
     private UserService userService;

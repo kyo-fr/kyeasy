@@ -39,6 +39,88 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <!-- Nacos 服务发现和配置 end-->
+        <!-- Spring Cloud LoadBalancer (用于 Feign 服务发现) -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        <!-- OCI Java SDK 核心依赖 -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-common</artifactId>
+            <version>3.32.0</version>
+        </dependency>
+        <!-- KMS 密钥管理依赖（核心） -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-keymanagement</artifactId>
+            <version>3.32.0</version>
+        </dependency>
+        <!-- OCI Java SDK HTTP 客户端提供程序 -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+            <version>3.32.0</version>
+        </dependency>
+        <!-- JAX-RS API (required by Jersey HTTP client) -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <!-- Jersey Client (required by OCI SDK Jersey HTTP provider) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Jersey Media JSON Jackson (required for JSON serialization) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Jersey HK2 Integration (required for dependency injection) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- HK2 API (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- HK2 Locator (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- HK2 Utils (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-utils</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- Jersey Apache Connector (required by OCI SDK, use correct version) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-apache-connector</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Apache HttpClient (required by Jersey Apache Connector) -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
@@ -100,6 +182,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.4</version>
                 <configuration>
                     <mainClass>org.ares.cloud.UserApplication</mainClass>
                 </configuration>

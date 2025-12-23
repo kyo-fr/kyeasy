@@ -142,7 +142,8 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<String> bizHandler(HttpServletRequest req, RequestBadException e){
         log.error("发生异常！请求错误原因是："+e);
-        return buildResult(e,e.getException());
+        // RequestBadException 实现了 DefMessageErrorInterface，直接使用 getMsg() 方法获取异常消息
+        return buildResult(e, e.getMsg());
     }
 
     /**
@@ -229,6 +230,9 @@ public class GlobalExceptionHandler {
         Result<String> result =  Result.error(err);
         if(null != err.getMessageKey()){
             result.setMsg(MessageUtils.get(err.getMessageKey(),defMsg));
+        } else if(StringUtils.isNotBlank(defMsg)){
+            // 如果没有国际化key，直接使用默认消息
+            result.setMsg(defMsg);
         }
         return result;
     }

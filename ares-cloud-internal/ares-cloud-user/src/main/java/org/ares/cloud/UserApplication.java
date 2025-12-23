@@ -1,6 +1,7 @@
 package org.ares.cloud;
 
 import org.ares.cloud.annotation.EnableAresServer;
+import org.ares.cloud.api.auth.properties.HsmProperties;
 import org.ares.cloud.user.properties.SuperAdminProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,9 +11,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableAresServer
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "org.ares.cloud.api.base")
+@EnableFeignClients(basePackages = {"org.ares.cloud.api.base", "org.ares.cloud.api.auth"})
 @ComponentScan(basePackages = {"org.ares.cloud.**","org.ares.cloud.**"})
-@EnableConfigurationProperties(SuperAdminProperties.class)
+@EnableConfigurationProperties({SuperAdminProperties.class, HsmProperties.class})
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);
