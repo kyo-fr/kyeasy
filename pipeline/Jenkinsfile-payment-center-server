@@ -4,6 +4,11 @@ pipeline {
     parameters {
         string(name: 'APP_NAME', defaultValue: 'ares-cloud-pay-center', description: '应用名称')
         string(name: 'MODEL_PATH', defaultValue: 'ares-cloud-pay/ares-cloud-pay-center', description: '模块相对根目录的路径')
+        choice(
+            name: 'PROFILE',
+            choices: ['dev', 'test', 'prod', 'staging'],
+            description: 'Spring Profile环境'
+        )
     }
     environment {
         // 定义全局变量
@@ -15,6 +20,42 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                echo "正在从 GitHub 拉取代码..."
+                script {
+                    // 如果 Jenkins 任务配置了 Pipeline script from SCM，可以使用 checkout scm
+                    // 否则需要显式指定 Git 仓库
+                    try {
+                        checkout scm
+                        echo "使用 SCM 配置拉取代码成功"
+                    } catch (Exception e) {
+                        echo "SCM 配置不可用，使用显式 Git 配置拉取代码"
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            userRemoteConfigs: [[
+                                url: 'https://github.com/kyo-fr/kyeasy.git',
+                                credentialsId: ''
+                            ]],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [[$class: 'CleanBeforeCheckout']]
+                        ])
+                    }
+                }
+                sh '''
+                    echo "当前工作目录: $(pwd)"
+                    echo "Git 仓库信息:"
+                    git remote -v || true
+                    echo "当前分支:"
+                    git branch || true
+                    echo "最新提交:"
+                    git log -1 --oneline || true
+                    echo "项目文件列表:"
+                    ls -la | head -20
+                '''
+            }
+        }
         stage('Verify Java Version') {
             steps {
                 sh 'java -version'
@@ -23,9 +64,23 @@ pipeline {
         stage('Build') {
             steps {
                 // 使用 Maven 构建项目
-                sh """
-                /opt/apache-maven-3.9.9/bin/mvn clean package -pl ${params.MODEL_PATH} -am -DskipTests
-                """
+                // 问题分析：Maven 的 -pl 参数在多级模块中，使用路径格式可能无法正确识别子模块
+                // 原因：Maven 需要先扫描所有模块才能识别路径，但路径格式可能无法正确匹配
+                // 解决方案：使用 artifactId 格式（:artifactId），Maven 会自动扫描所有模块并匹配
+                script {
+                    sh """
+                    echo "当前工作目录: \$(pwd)"
+                    echo "检查项目结构..."
+                    ls -la | head -20
+                    echo "检查根目录 pom.xml..."
+                    [ -f "pom.xml" ] && echo "✓ 找到根 pom.xml" || echo "✗ 未找到根 pom.xml"
+                    echo "检查模块路径是否存在..."
+                    [ -d "${params.MODEL_PATH}" ] && echo "✓ 模块路径存在: ${params.MODEL_PATH}" || echo "✗ 模块路径不存在: ${params.MODEL_PATH}"
+                    echo "开始构建模块..."
+                    # 使用 artifactId 格式，Maven 会自动包含依赖的父模块（-am 参数）
+                    /usr/local/maven/bin/mvn clean package -pl :ares-cloud-pay-center -am -DskipTests
+                    """
+                }
             }
         }
         stage('Deploy') {
@@ -33,23 +88,137 @@ pipeline {
                 script {
                     // 检查并停止正在运行的 JAR 应用
                     sh """
-                    PID=\$(ps -ef | grep "${DEPLOY_PATH}${JAR_NAME}" | grep -v grep | awk '{print \$2}')
-                    if [ -n "\$PID" ]; then
-                      echo "Stopping existing application (PID: \$PID)"
-                      sudo kill -9 \$PID
+                    echo "Checking for running applications matching: ${APP_NAME}"
+                    # 查找匹配的 Java 进程（避免匹配到 grep 进程）
+                    PIDS=\$(ps -ef | grep "[j]ava.*${APP_NAME}" | awk '{print \$2}')
+                    if [ -n "\$PIDS" ]; then
+                      echo "Found running application(s), PIDs: \$PIDS"
+                      echo "Stopping processes..."
+                      for PID in \$PIDS; do
+                        if [ -n "\$PID" ]; then
+                          echo "Killing PID: \$PID"
+                          kill -9 \$PID 2>/dev/null || true
+                        fi
+                      done
+                      echo "Kill commands executed, waiting for processes to terminate..."
+                      sleep 2
+                      # 验证进程是否已停止
+                      REMAINING=\$(ps -ef | grep "[j]ava.*${APP_NAME}" | awk '{print \$2}')
+                      if [ -n "\$REMAINING" ]; then
+                        echo "Warning: Some processes may still be running, attempting additional cleanup..."
+                        for PID in \$REMAINING; do
+                          kill -9 \$PID 2>/dev/null || true
+                        done
+                        sleep 1
+                      else
+                        echo "All processes have been successfully stopped."
+                      fi
+                      echo "Process stop operation completed."
                     else
                       echo "No application is running."
                     fi
-                    """
-                    // 删除旧的JAR文件并复制新的JAR文件到部署目录
-                    sh """
-                    sudo rm -f ${DEPLOY_PATH}${JAR_NAME}
-                    sudo cp ${params.MODEL_PATH}/target/*.jar ${DEPLOY_PATH}${JAR_NAME}
+                    echo "Process check completed successfully."
                     """
 
-                    // 启动新的服务并将日志输出到指定文件
                     sh """
-                    sudo sh -c "java -jar ${DEPLOY_PATH}${JAR_NAME} --spring.profiles.active=test > ${LOG_FILE} 2>&1 &"
+                    echo "当前用户: \$(whoami)"
+                    echo "当前目录: \$(pwd)"
+                    cd "${WORKSPACE}"
+                    echo "切换到工作目录: \$(pwd)"
+
+                    # 尝试创建部署目录和日志目录（如果不存在）
+                    echo "准备部署目录: ${DEPLOY_PATH}"
+                    sudo -n mkdir -p "${DEPLOY_PATH}" 2>/dev/null || {
+                      if [ -d "${DEPLOY_PATH}" ]; then
+                        echo "部署目录已存在，跳过创建"
+                      else
+                        echo "警告: 无法创建部署目录，但目录可能已存在，继续尝试..."
+                      fi
+                    }
+
+                    echo "准备日志目录: ${LOG_DIR}"
+                    sudo -n mkdir -p "${LOG_DIR}" 2>/dev/null || {
+                      if [ -d "${LOG_DIR}" ]; then
+                        echo "日志目录已存在，跳过创建"
+                      else
+                        echo "警告: 无法创建日志目录，但目录可能已存在，继续尝试..."
+                      fi
+                    }
+
+                    # 杀死 9300 端口的进程
+                    PID=\$(sudo -n lsof -ti:9300 2>/dev/null || sudo -n netstat -tlnp 2>/dev/null | grep ':9300 ' | awk '{print \\\$7}' | cut -d'/' -f1 | head -1)
+                    if [ -n "\$PID" ]; then
+                      echo "找到占用端口9300的进程，PID: \$PID"
+                      sudo -n kill -9 \$PID 2>/dev/null || true
+                      echo "已杀死进程 \$PID"
+                      sleep 1
+                    else
+                      echo "端口9300未被占用，无需杀死进程"
+                    fi
+
+                    echo "开始部署 JAR 文件..."
+                    echo "检查构建产物..."
+                    echo "模块路径: ${params.MODEL_PATH}"
+                    echo "Target 目录: ${params.MODEL_PATH}/target"
+
+                    # 检查 target 目录是否存在
+                    if [ ! -d "${params.MODEL_PATH}/target" ]; then
+                      echo "错误: target 目录不存在: ${params.MODEL_PATH}/target"
+                      echo "请检查构建是否成功完成"
+                      exit 1
+                    fi
+
+                    # 列出 target 目录内容以便调试
+                    echo "Target 目录内容:"
+                    ls -la "${params.MODEL_PATH}/target/" || true
+
+                    # 查找 JAR 文件（排除 sources 和 javadoc JAR）
+                    JAR_FILE=\$(find "${params.MODEL_PATH}/target" -name "*.jar" ! -name "*sources.jar" ! -name "*javadoc.jar" | head -1)
+
+                    if [ -z "\$JAR_FILE" ]; then
+                      echo "错误: 在 ${params.MODEL_PATH}/target 中未找到 JAR 文件"
+                      echo "请检查构建是否成功完成"
+                      exit 1
+                    fi
+
+                    echo "找到 JAR 文件: \$JAR_FILE"
+                    echo "文件信息:"
+                    ls -lh "\$JAR_FILE"
+
+                    # 复制 JAR 文件
+                    sudo -n rm -f ${DEPLOY_PATH}${JAR_NAME}
+                    sudo -n cp "\$JAR_FILE" ${DEPLOY_PATH}${JAR_NAME}
+                    echo "JAR 文件已复制到: ${DEPLOY_PATH}${JAR_NAME}"
+
+                    # 确保日志文件存在（如果不存在则创建）
+                    echo "准备日志文件: ${LOG_FILE}"
+                    sudo -n touch ${LOG_FILE} 2>/dev/null || {
+                      echo "错误: 无法创建日志文件 ${LOG_FILE}"
+                      echo "请检查日志目录 ${LOG_DIR} 是否存在且有写权限"
+                      exit 1
+                    }
+                    echo "日志文件已准备: ${LOG_FILE}"
+
+                    echo "启动应用，Profile: ${params.PROFILE}..."
+                    sudo -n sh -c "java -jar ${DEPLOY_PATH}${JAR_NAME} --spring.profiles.active=${params.PROFILE} 2>&1 | tee -a ${LOG_FILE} &"
+                    sleep 1
+                    APP_PID=\$(ps aux | grep "[j]ava.*${JAR_NAME}" | awk '{print \$2}' | head -1)
+                    if [ -n "\$APP_PID" ]; then
+                      echo "应用已启动，PID: \${APP_PID}"
+                    else
+                      echo "警告: 无法获取应用PID，但应用可能已启动"
+                    fi
+                    echo "应用启动日志将同时输出到: ${LOG_FILE} 和 Jenkins 控制台"
+                    echo "等待应用启动，查看启动日志..."
+                    sleep 5
+                    echo "--- 应用启动日志（最近30行）---"
+                    if [ -f "${LOG_FILE}" ]; then
+                      sudo -n tail -n 30 ${LOG_FILE}
+                    else
+                      echo "日志文件尚未生成"
+                    fi
+                    echo "--- 启动日志结束 ---"
+                    echo "应用将继续在后台运行，完整日志请查看: ${LOG_FILE}"
                     """
                 }
             }
