@@ -1,0 +1,96 @@
+# 开发环境配置
+server:
+  port: 28085  # 订单服务端口
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://141.253.123.26:18848 # Nacos 服务地址
+        username: nacos
+        password: nacos@@admin
+      config:
+        server-addr: http://141.253.123.26:18848  # Nacos 配置中心地址
+        file-extension: yaml          # 配置文件格式
+        group: DEFAULT_GROUP          # 配置组名
+        namespace: public             # 配置的命名空间
+        import-check:
+          enabled: false
+        username: nacos
+        password: nacos@@admin
+  
+  datasource:
+    url: jdbc:oracle:thin:@test1_medium
+    username: admin
+    password: 5588@TYkser*&dfhg
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5                   # 初始化时建立物理连接的个数
+      max-active: 20                    # 连接池最大连接数
+      min-idle: 5                       # 最小连接池大小
+      max-wait: 60000                   # 获取连接时最大等待时间（毫秒）
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1        # 验证连接有效性SQL
+      test-while-idle: true             # 是否在空闲时检查连接
+      test-on-borrow: false             # 是否在获取连接时检查连接
+      test-on-return: false             # 是否在归还连接时检查连接
+      pool-prepared-statements: true    # 是否启用PSCache
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j2          # 配置监控统计、SQL防火墙、日志
+  data:
+    redis:
+      database: 1
+      host: localhost
+      port: 6379
+      password: LZLlzl12345
+      timeout: 6000ms
+  # RabbitMQ 开发环境配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    publisher-confirm-type: correlated    # 发布确认
+    publisher-returns: true               # 发布退回
+    template:
+      mandatory: true                     # 强制路由
+    listener:
+      simple:
+        acknowledge-mode: manual          # 手动确认模式
+        prefetch: 10                      # 预取数量
+
+# 开发环境日志配置
+logging:
+  level:
+    # 核心业务日志 - 关注消息可靠性
+    com.ares.cloud.order.infrastructure.messaging: DEBUG  # 消息处理日志，关键业务信息（DEBUG 用于排查）
+    com.ares.cloud.order.application.consumer: DEBUG      # 消费者日志，关注消费状态
+    
+    # Spring Cloud Stream 详细日志 - 监控消息流状态（排查时使用 DEBUG）
+    org.springframework.cloud.stream: INFO               # Stream 核心日志
+    org.springframework.cloud.stream.function: DEBUG     # 函数式编程模型日志
+    org.springframework.cloud.stream.binding: INFO       # 绑定状态日志
+    org.springframework.cloud.stream.binder: INFO        # Binder 日志
+    org.springframework.integration: INFO                # Spring Integration 日志
+    org.springframework.integration.channel: DEBUG       # Channel 日志
+    
+    # RabbitMQ 详细日志 - 关注消息传输可靠性（排查时使用 DEBUG）
+    org.springframework.amqp: INFO                       # Spring AMQP 核心日志
+    org.springframework.rabbit: INFO                     # Spring Rabbit 日志
+    org.springframework.rabbit.listener: DEBUG           # Listener 日志（重要）
+    com.rabbitmq: INFO                                   # RabbitMQ 客户端日志
+    
+    # 数据库日志 - 简化SQL日志
+    com.baomidou.mybatisplus: warn                       # MyBatis Plus 日志
+    org.apache.ibatis: warn                              # MyBatis 日志
+    
+    # Spring 框架日志 - 简化启动日志
+    org.springframework.context.support: warn            # Spring 上下文日志
+    org.springframework.boot.autoconfigure: warn         # 自动配置日志
+
+mybatis-plus:
+  configuration:
+    jdbc-type-for-null: VARCHAR  # Oracle 数据库必须设置，解决 null 值参数问题

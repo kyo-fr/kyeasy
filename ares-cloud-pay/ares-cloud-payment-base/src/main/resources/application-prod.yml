@@ -1,0 +1,54 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://141.253.123.26:18848 # Nacos 服务地址
+        username: nacos
+        password: nacos@@admin
+      config:
+        server-addr: http://141.253.123.26:18848  # Nacos 配置中心地址
+        file-extension: yaml          # 配置文件格式
+        group: DEFAULT_GROUP          # 配置组名
+        namespace: public             # 配置的命名空间
+        import-check:
+          enabled: false
+        username: nacos
+        password: nacos@@admin
+  datasource:
+    url: jdbc:oracle:thin:@test1_medium
+    username: admin
+    password: 5588@TYkser*&dfhg
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5                   # 初始化时建立物理连接的个数
+      max-active: 20                    # 连接池最大连接数
+      min-idle: 5                       # 最小连接池大小
+      max-wait: 60000                   # 获取连接时最大等待时间（毫秒）
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1        # 验证连接有效性SQL
+      test-while-idle: true             # 是否在空闲时检查连接
+      test-on-borrow: false             # 是否在获取连接时检查连接
+      test-on-return: false             # 是否在归还连接时检查连接
+      pool-prepared-statements: true    # 是否启用PSCache
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j2          # 配置监控统计、SQL防火墙、日志
+
+logging:
+  level:
+    com.baomidou.mybatisplus.core.mapper: debug    # 打印 Mapper 层的 SQL 日志
+    org.apache.ibatis.executor: debug             # 打印 SQL 执行的日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 和参数
+    jdbc-type-for-null: VARCHAR  # Oracle 数据库必须设置，解决 null 值参数问题
+# jwt配置
+ares:
+  cloud:
+    #支付相关配置
+    pay:
+      braintree:
+        merchant_id: "v378pgg7vtj49jcd"
+        public_key: "8w4zg2d42r5p8k2j"
+        private_key: "b1a32ae9226df31d6769f8266588ffd3"
