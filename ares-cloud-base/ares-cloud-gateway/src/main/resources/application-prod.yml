@@ -4,12 +4,12 @@ spring:
       discovery:
         server-addr: http://141.253.123.26:18848 # Nacos 服务地址
         username: nacos
-        password: nacos@@admin
+        password: nacos
       config:
         server-addr: http://141.253.123.26:18848
         namespace: public
         username: nacos
-        password: nacos@@admin
+        password: nacos
         file-extension: yaml
         group: DEFAULT_GROUP    # 也可以使用 group 分组不同环境配置
         refresh-enabled: true

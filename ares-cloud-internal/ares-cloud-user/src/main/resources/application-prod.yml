@@ -11,7 +11,7 @@ spring:
       discovery:
         server-addr: http://141.253.123.26:18848 # Nacos 服务地址
         username: nacos
-        password: nacos@@admin
+        password: nacos
         enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
         namespace: public  # 命名空间，确保与 base-service 一致
         group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
@@ -23,7 +23,7 @@ spring:
         import-check:
           enabled: false
         username: nacos
-        password: nacos@@admin
+        password: nacos
         enabled: true  # 启用配置中心，如果 Nacos 不可用，可以设置为 false 禁用
         refresh-enabled: true  # 启用配置刷新
     # LoadBalancer 配置（用于服务发现）

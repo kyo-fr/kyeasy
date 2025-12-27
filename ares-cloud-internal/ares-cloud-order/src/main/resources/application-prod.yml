@@ -8,7 +8,7 @@ spring:
       discovery:
         server-addr: http://141.253.123.26:18848 # Nacos 服务地址
         username: nacos
-        password: nacos@@admin
+        password: nacos
       config:
         server-addr: http://141.253.123.26:18848  # Nacos 配置中心地址
         file-extension: yaml          # 配置文件格式
@@ -17,7 +17,7 @@ spring:
         import-check:
           enabled: false
         username: nacos
-        password: nacos@@admin
+        password: nacos
   
   datasource:
     url: jdbc:oracle:thin:@test1_medium
