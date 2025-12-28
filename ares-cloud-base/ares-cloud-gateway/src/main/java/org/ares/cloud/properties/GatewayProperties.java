@@ -1,12 +1,13 @@
 package org.ares.cloud.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@RefreshScope
 @ConfigurationProperties(prefix = "ares.gateway")
 public class GatewayProperties {
     // 默认的公开路径
