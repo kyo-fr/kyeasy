@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serial;
@@ -19,42 +20,49 @@ public class SysRoleUrlEntity implements Serializable {
     /**
      * 主键ID
      */
+    @Schema(description = "主键ID")
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
      * 接口URL表主键ID（关联分类-URL表）
      */
+    @Schema(description = "接口URL表主键ID（关联分类-URL表）")
     @TableField("URL_ID")
     private String urlId;
 
     /**
      * 角色表主键ID（关联角色表）
      */
+    @Schema(description = "角色表主键ID（关联角色表）")
     @TableField("ROLE_ID")
     private String roleId;
 
     /**
      * 状态(1:正常,2:停用)，默认值1
      */
+    @Schema(description = "状态(1:正常,2:停用)，默认值1")
     @TableField("STATUS")
     private Integer status;
 
     /**
      * 删除标记（0-未删除；1-已删除），默认值0
      */
+    @Schema(description = "删除标记（0-未删除；1-已删除），默认值0")
     @TableField("DELETED")
     private Integer deleted;
 
     /**
      * 版本号（乐观锁字段）
      */
+    @Schema(description = "版本号（乐观锁字段）")
     @TableField("VERSION")
     private Integer version;
 
     /**
      * 创建时间（13位时间戳，精确到毫秒）
      */
+    @Schema(description = "创建时间（13位时间戳，精确到毫秒）")
     @TableField("CREATE_TIME")
     private Long createTime;
 

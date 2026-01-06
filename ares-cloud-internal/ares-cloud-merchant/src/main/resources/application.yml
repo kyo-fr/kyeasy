@@ -5,7 +5,7 @@ spring:
   application:
     name: merchant-service # 应用名称，用于服务注册
   profiles:
-    active: prod
+    active: dev
 
 # 可以将更多自定义配置放入 Nacos 配置中心
 springdoc:

@@ -1,14 +1,14 @@
 # 开发环境配置
-server:
-  port: 28085  # 订单服务端口
-
 spring:
   cloud:
     nacos:
       discovery:
         server-addr: localhost:18848 # Nacos 服务地址
         username: nacos
-        password: LZLlzl12345
+        password: nacos
+        enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
+        namespace: public  # 命名空间，确保与 base-service 一致
+        group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
       config:
         server-addr: localhost:18848  # Nacos 配置中心地址
         file-extension: yaml          # 配置文件格式
@@ -17,8 +17,18 @@ spring:
         import-check:
           enabled: false
         username: nacos
-        password: LZLlzl12345
-  
+        password: nacos
+        enabled: true  # 启用配置中心，如果 Nacos 不可用，可以设置为 false 禁用
+        refresh-enabled: true  # 启用配置刷新
+    # Feign 客户端配置
+    openfeign:
+      client:
+        config:
+          # merchant-service 的 Feign 客户端配置
+          merchant-service:
+            # 移除 url 配置，使用服务发现从 Nacos 中查找 base-service 服务
+            connectTimeout: 10000  # 连接超时时间（毫秒）
+            readTimeout: 60000    # 读取超时时间（毫秒）
   datasource:
     url: jdbc:oracle:thin:@test1_medium
     username: admin
@@ -44,7 +54,7 @@ spring:
       database: 1
       host: localhost
       port: 6379
-      password: "123456"
+      password: "LZLlzl12345"
       timeout: 6000ms
   # RabbitMQ 开发环境配置
   rabbitmq:

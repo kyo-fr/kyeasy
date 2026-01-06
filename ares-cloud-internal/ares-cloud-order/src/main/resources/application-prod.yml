@@ -1,7 +1,4 @@
 # 开发环境配置
-server:
-  port: 28085  # 订单服务端口
-
 spring:
   cloud:
     nacos:

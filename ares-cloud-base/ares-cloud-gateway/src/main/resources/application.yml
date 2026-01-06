@@ -10,7 +10,7 @@ spring:
   application:
     name: ares-cloud-gateway
   profiles:
-    active: prod   # 根据不同环境切换 profile，值可以为 dev, prod, staging 等
+    active: dev   # 根据不同环境切换 profile，值可以为 dev, prod, staging 等
 
   cloud:
     gateway:
