@@ -2,6 +2,7 @@ package org.ares.cloud.feign.advice;
 
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.ares.cloud.common.exception.BaseErrorInfoInterface;
 import org.ares.cloud.common.exception.BaseException;
 import org.ares.cloud.common.model.Result;
@@ -43,7 +44,16 @@ public class RpcGlobalExceptionHandler {
         Result<String> result = Result.error(err, exception);
         // 国际化处理：使用 messageKey 获取翻译后的消息
         if (result.getReason() != null) {
-            result.setMsg(MessageUtils.get(err.getMessageKey(), result.getMsg()));
+            String i18nMsg = MessageUtils.get(err.getMessageKey(), null);
+            // 确保消息被正确设置，如果国际化消息为空或为"NOT_TRANSLATED"，使用消息键作为默认消息
+            if (StringUtils.isNotBlank(i18nMsg) && !"NOT_TRANSLATED".equals(i18nMsg)) {
+                result.setMsg(i18nMsg);
+                result.setReason(i18nMsg);
+            } else {
+                // 如果国际化消息获取失败，使用消息键作为默认消息
+                result.setMsg(err.getMessageKey());
+                result.setReason(err.getMessageKey());
+            }
         }
         return result;
     }

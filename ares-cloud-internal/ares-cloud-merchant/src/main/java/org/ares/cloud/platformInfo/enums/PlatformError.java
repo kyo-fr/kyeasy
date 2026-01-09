@@ -32,7 +32,8 @@ public enum PlatformError implements BaseErrorInfoInterface {
     PLATFORM_USER_APPROVAL_ENOUGH_ERROR("platform.user.approval.enough.error"),//当前存储已消耗完成,该用户可用存储不足
     PLATFORM_INFO_NOT_EXIST_ERROR("platform.info.not.exist.error"),//平台信息不存在
     PLATFORM_ACCOUNT_PERMISSIONS_ERROR("platform.account.permissions.error"),//账号权限不足
-    PLATFORM_TAX_NUM_EXIST_ERROR("platform.tax.num.exist.error")//税务号已存在
+    PLATFORM_TAX_NUM_EXIST_ERROR("platform.tax.num.exist.error"),//税务号已存在
+    PLATFORM_MERCHANT_TENANTID_EXIST_ERROR("platform.merchant.tenantId.exist.error")//此手机号已注册商户，不可重复注册
 
     ;
 

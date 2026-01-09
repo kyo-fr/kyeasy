@@ -17,14 +17,14 @@ public class RequestBadException extends BaseException {
     }
 
     public RequestBadException(BaseErrorInfoInterface err) {
-        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(),err.getMessageKey(), err.getMessageKey());
+        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(), null, err.getMessageKey());
     }
 
     public RequestBadException(BaseErrorInfoInterface err, Throwable cause) {
-        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(),err.getMessageKey(), err.getMessageKey());
+        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(), null, err.getMessageKey());
     }
     public RequestBadException(BaseErrorInfoInterface err, Exception exception) {
-        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(),err.getMessageKey(), err.getMessageKey());
+        super(ResponseCodeEnum.REQUEST_PARAMETER_ERROR.getCode(), null, err.getMessageKey());
         this.exception = exception;
     }
 

@@ -529,6 +529,14 @@ public class PlatformApprovalServiceImpl extends BaseServiceImpl<PlatformApprova
                 baseMapper.updateById(platformApprovalEntity);
             int updateUser = userMapper.updateUserById(platformApprovalSettlementDto.getUserId(), UserIdentity.Merchants.getValue(), tenantId);
             if (updateUser > 0) {
+                //根据租户ID查询merchant_info中是否有未删除记录
+                LambdaQueryWrapper<MerchantInfoEntity> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(MerchantInfoEntity::getId, tenantId)
+                        .eq(MerchantInfoEntity::getDeleted, 0);
+                MerchantInfoEntity existingMerchant = merchantInfoRepository.selectOne(queryWrapper);
+                if (existingMerchant != null) {
+                    throw new RequestBadException(PlatformError.PLATFORM_MERCHANT_TENANTID_EXIST_ERROR);
+                }
                 //生成商户信息
                 MerchantInfoEntity merchantInfoEntity = new MerchantInfoEntity();
                 String userId = Objects.requireNonNull(userDto).getId();

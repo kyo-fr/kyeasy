@@ -142,8 +142,8 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result<String> bizHandler(HttpServletRequest req, RequestBadException e){
         log.error("发生异常！请求错误原因是："+e);
-        // RequestBadException 实现了 DefMessageErrorInterface，直接使用 getMsg() 方法获取异常消息
-        return buildResult(e, e.getMsg());
+        // RequestBadException 实现了 BaseErrorInfoInterface，使用 getMessageKey() 获取国际化消息
+        return buildResult(e, (String) null);
     }
 
     /**
@@ -217,7 +217,16 @@ public class GlobalExceptionHandler {
     private  Result<String> buildResult(BaseErrorInfoInterface err,Exception e){
         Result<String> result =  Result.error(err,e);
         if(null != result.getReason()){
-            result.setMsg(MessageUtils.get(err.getMessageKey(),null));
+            String i18nMsg = MessageUtils.get(err.getMessageKey(),null);
+            // 确保消息被正确设置，如果国际化消息为空或为"NOT_TRANSLATED"，使用消息键作为默认消息
+            if(StringUtils.isNotBlank(i18nMsg) && !"NOT_TRANSLATED".equals(i18nMsg)){
+                result.setMsg(i18nMsg);
+                result.setReason(i18nMsg);
+            } else {
+                // 如果国际化消息获取失败，使用消息键作为默认消息
+                result.setMsg(err.getMessageKey());
+                result.setReason(err.getMessageKey());
+            }
         }
         return result;
     }
@@ -229,10 +238,23 @@ public class GlobalExceptionHandler {
     private  Result<String> buildResult(BaseErrorInfoInterface err,String defMsg){
         Result<String> result =  Result.error(err);
         if(null != err.getMessageKey()){
-            result.setMsg(MessageUtils.get(err.getMessageKey(),defMsg));
+            String i18nMsg = MessageUtils.get(err.getMessageKey(),defMsg);
+            // 确保消息被正确设置，如果国际化消息为空或为"NOT_TRANSLATED"，使用默认消息
+            if(StringUtils.isNotBlank(i18nMsg) && !"NOT_TRANSLATED".equals(i18nMsg)){
+                result.setMsg(i18nMsg);
+                result.setReason(i18nMsg);
+            } else if(StringUtils.isNotBlank(defMsg)){
+                result.setMsg(defMsg);
+                result.setReason(defMsg);
+            } else {
+                // 如果都没有，使用消息键作为默认消息
+                result.setMsg(err.getMessageKey());
+                result.setReason(err.getMessageKey());
+            }
         } else if(StringUtils.isNotBlank(defMsg)){
             // 如果没有国际化key，直接使用默认消息
             result.setMsg(defMsg);
+            result.setReason(defMsg);
         }
         return result;
     }
