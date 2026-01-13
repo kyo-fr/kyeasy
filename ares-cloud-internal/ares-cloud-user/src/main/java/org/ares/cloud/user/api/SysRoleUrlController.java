@@ -35,32 +35,11 @@ public class SysRoleUrlController {
         return Result.success(page);
     }
 
-    @PostMapping(value = "/add")
-    @Operation(summary = "添加角色URL关系")
-    public Result<String> save(@RequestBody @Valid SysRoleUrlEntity entity) {
-        sysRoleUrlService.save(entity);
-        return Result.success();
-    }
-
-    @PostMapping(value = "/update")
+    @PostMapping(value = "/update-url-and-role")
     @Operation(summary = "编辑角色URL关系")
     public Result<String> update(@RequestBody @Valid SysRoleUrlEntity entity) {
-        sysRoleUrlService.updateById(entity);
+        sysRoleUrlService.updateUrlAndRole(entity);
         return Result.success();
-    }
-
-    @PostMapping(value = "/delete-by-id")
-    @Operation(summary = "根据ID删除角色URL关系")
-    public Result<String> delete(@RequestBody @Valid SysRoleUrlEntity entity) {
-        sysRoleUrlService.removeById(entity.getId());
-        return Result.success();
-    }
-
-    @PostMapping(value = "/get-role-ids-by-url-ids")
-    @Operation(summary = "编辑角色URL关系")
-    public Result<List<SysRoleUrlDto>> getRoleIdsByUrlIds(@RequestBody @Valid SysRoleUrlEntity entity) {
-        List<SysRoleUrlDto> roleIdsByUrlIds = sysRoleUrlService.getRoleIdsByUrlIds(entity);
-        return Result.success(roleIdsByUrlIds);
     }
 }
 

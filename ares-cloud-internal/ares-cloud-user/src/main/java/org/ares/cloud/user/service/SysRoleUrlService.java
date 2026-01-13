@@ -44,4 +44,11 @@ public interface SysRoleUrlService extends BaseService<SysRoleUrlEntity> {
      * @return
      */
     List<SysRoleUrlDto> getRoleIdsByUrlIds(SysRoleUrlEntity entity);
+
+    /**
+     * 编辑URL和角色的关系
+     * @param entity 角色URL实体
+     * @return 是否更新成功
+     */
+    boolean updateUrlAndRole(SysRoleUrlEntity entity);
 }

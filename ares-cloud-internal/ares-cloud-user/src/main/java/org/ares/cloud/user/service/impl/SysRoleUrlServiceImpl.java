@@ -183,6 +183,62 @@ public class SysRoleUrlServiceImpl extends BaseServiceImpl<SysRoleUrlRepository,
 
     }
 
+    @Override
+    public boolean updateUrlAndRole(SysRoleUrlEntity entity) {
+        if (entity == null || StringUtils.isBlank(entity.getUrlId())) {
+            return true;
+        }
+        // 查询指定url的角色
+        LambdaQueryWrapper<SysRoleUrlEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysRoleUrlEntity::getUrlId, entity.getUrlId());
+        wrapper.eq(SysRoleUrlEntity::getDeleted, 0);
+        List<SysRoleUrlEntity> entities = this.list(wrapper);
+        if (CollectionUtils.isEmpty(entities)) {
+            // 表中数据为空
+            if (CollectionUtils.isEmpty(entity.getRoleIdList())) {
+                // 如果入参角色为空，直接返回
+                return true;
+            } else {
+                // 入参数据不为空，则新增入参中的角色
+                for (String roleId : entity.getRoleIdList()) {
+                    SysRoleUrlEntity newEntity = new SysRoleUrlEntity();
+                    newEntity.setUrlId(entity.getUrlId());
+                    newEntity.setRoleId(roleId);
+                    this.save(newEntity);
+                }
+            }
+        } else {
+            // 如果表中不为空
+            if (CollectionUtils.isEmpty(entity.getRoleIdList())) {
+                // 入参角色为空，则全部删除表中此url关联的角色
+                for (SysRoleUrlEntity sysRoleUrlEntity : entities) {
+                    this.removeById(sysRoleUrlEntity.getId());
+                }
+            } else {
+                // 入参角色不为空，对比表中数据跟入参数据
+                Map<String, String> dataMap = entities.stream().collect(Collectors.toMap(SysRoleUrlEntity::getRoleId, SysRoleUrlEntity::getRoleId));
+                // 遍历入参的roleId
+                for (String roleId : entity.getRoleIdList()) {
+                    if (!dataMap.containsKey(roleId)) {
+                        // 表中不存在入参的角色ID，则新增
+                        SysRoleUrlEntity newEntity = new SysRoleUrlEntity();
+                        newEntity.setUrlId(entity.getUrlId());
+                        newEntity.setRoleId(roleId);
+                        this.save(newEntity);
+                    }
+                }
+                // 遍历表中的数据
+                for (SysRoleUrlEntity sysRoleUrlEntity : entities) {
+                    // 入参中不存在的角色，则删除
+                    if (!entity.getRoleIdList().contains(sysRoleUrlEntity.getRoleId())) {
+                        this.removeById(sysRoleUrlEntity.getId());
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * 将实体转换为DTO
      * @param entity 实体

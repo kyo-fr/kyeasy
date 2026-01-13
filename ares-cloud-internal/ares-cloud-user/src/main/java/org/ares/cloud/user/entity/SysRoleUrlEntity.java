@@ -129,4 +129,7 @@ public class SysRoleUrlEntity implements Serializable {
     @TableField(exist = false)
     private Set<String> urlList;
 
+    @TableField(exist = false)
+    private Set<String> roleIdList;
+
 }
