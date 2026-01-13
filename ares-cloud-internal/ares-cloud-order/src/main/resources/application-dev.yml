@@ -60,8 +60,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: admin
-    password: admin123
+    username: guest
+    password: guest
     virtual-host: /
     publisher-confirm-type: correlated    # 发布确认
     publisher-returns: true               # 发布退回

@@ -15,6 +15,14 @@ spring:
         enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
         namespace: public  # 命名空间，确保与 base-service 一致
         group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
+      config:
+        server-addr: localhost:18848
+        namespace: public
+        username: nacos
+        password: nacos
+        file-extension: yaml
+        group: DEFAULT_GROUP    # 也可以使用 group 分组不同环境配置
+        refresh-enabled: true
     # LoadBalancer 配置（用于服务发现）
     loadbalancer:
       retry:
@@ -31,6 +39,9 @@ spring:
           default:
             connectTimeout: 10000  # 默认连接超时时间（毫秒）
             readTimeout: 60000    # 默认读取超时时间（毫秒），增加到 6 秒
+  config:
+    import: optional:nacos:${spring.application.name}?refreshEnabled=true
+
   datasource:
     url: jdbc:oracle:thin:@test1_medium
     username: admin

@@ -127,7 +127,8 @@ public class AuthFilter implements WebFilter {
     private boolean isNeedAuth(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
         String requestPath = request.getURI().getPath();
-        return !SecurityUtils.isPathOpen(gatewayProperties.getPublicPaths(), requestPath);
+        boolean flag = !SecurityUtils.isPathOpen(gatewayProperties.getPublicPaths(), requestPath);
+        return flag;
     }
 
     /**

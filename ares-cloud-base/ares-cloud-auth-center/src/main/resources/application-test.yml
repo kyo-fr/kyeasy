@@ -12,3 +12,13 @@ spring:
         server-addr: localhost:18848 # Nacos 服务地址
         username: nacos
         password: nacos@@admin
+      config:
+        server-addr: localhost:18848
+        namespace: public
+        username: nacos
+        password: nacos
+        file-extension: yaml
+        group: DEFAULT_GROUP    # 也可以使用 group 分组不同环境配置
+        refresh-enabled: true
+  config:
+    import: optional:nacos:${spring.application.name}?refreshEnabled=true

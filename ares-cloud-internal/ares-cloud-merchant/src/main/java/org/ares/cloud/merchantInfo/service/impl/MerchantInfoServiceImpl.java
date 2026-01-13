@@ -238,7 +238,7 @@ public class MerchantInfoServiceImpl extends BaseServiceImpl<MerchantInfoReposit
                 merchantInfoVo.setUsedMemory(usedMemory1 );
                 //根据商户merchantId查询上次购买审批通过订阅金额
                 QueryWrapper<PlatformApprovalEntity> wrapper = new QueryWrapper<>();
-                wrapper.eq("tenant_id",merchantId);
+                wrapper.eq("user_id", userId);
                 wrapper.eq("sub_status", SubscribeStatus.SUB.getValue());
                 PlatformApprovalEntity platformApprovalEntity = platformApprovalRepository.selectOne(wrapper);
                 //商户上次购买金额

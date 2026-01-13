@@ -1,29 +1,40 @@
 package org.ares.cloud.properties;
 
 import lombok.Data;
-import org.ares.cloud.common.constant.interfaces.AresConstant;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
 
 /**
- * @author hugo
- * @version 1.0
- * @description: TODO
- * @date 2024/10/10 17:00
+ * Firebase Admin SDK 配置实体类
+ * 绑定 Nacos 中 ares.cloud.auth.firebase.admin 节点的配置
  */
 @Data
-@Configuration
+@RefreshScope
+@ConfigurationProperties(prefix = "firebase.admin")
 public class FirebaseProperties {
-    /**
-     * firebase_apikey
-     */
-    @Value("${ares.cloud.auth.firebase.apikey:firebase_apikey}")
-    private String firebase_apikey;
-    /**
-     * baseUrl
-     */
-    @Value("${ares.cloud.auth.firebase.baseUrl:''}")
-    private String baseUrl;
+
+    private String type;
+
+    private String projectId;
+
+    private String privateKeyId;
+
+    private String privateKey;
+
+    private String clientEmail;
+
+    private String clientId;
+
+    private String authUri;
+
+    private String tokenUri;
+
+    private String authProviderX509CertUrl;
+
+    private String clientX509CertUrl;
+
+    private String universeDomain;
 
 }
