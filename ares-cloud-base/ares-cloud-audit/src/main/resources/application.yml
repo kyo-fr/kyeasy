@@ -1,0 +1,32 @@
+server:
+  port: 8900
+  jetty:
+    max-http-form-post-size: 10MB
+  tomcat:
+    max-http-form-post-size: 10MB
+spring:
+  application:
+    name: ares-cloud-audit
+  profiles:
+    active: prod
+
+
+# 可以将更多自定义配置放入 Nacos 配置中心
+springdoc:
+  api-docs:
+    path: /v3/api-docs  # 统一文档路径
+
+# Oracle HSM 配置
+ares:
+  cloud:
+    hsm:
+      enabled: true
+      config-file-path: ~/.oci/config
+      config-profile: DEFAULT
+      key-ocid: ocid1.key.oc1.eu-paris-1.h5usmibaaaays.abrwiljr7ue3kf6xyq57ffly64xxouko2ryy6l6halrawnazerrlmsd6l64a
+      key-version-ocid: ocid1.keyversion.oc1.eu-paris-1.h5usmibaaaays.pcexnetccyaaa.abrwiljrhz3nuytkatuz5x5tkvjdpcn4za4nwuwkmvqg3zfkuvmoxjw4yt7q
+      vault-name: kyeasy
+      protection-mode: HSM
+      region: eu-paris-1
+      public-key-ocid: abrwiljr7ue3kf6xyq57ffly64xxouko2ryy6l6halrawnazerrlmsd6l64a
+

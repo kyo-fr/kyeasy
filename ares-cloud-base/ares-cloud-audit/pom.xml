@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ares.cloud</groupId>
+        <artifactId>ares-cloud-base</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ares-cloud-audit</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-cloud-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-framework-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-framework-starter-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-framework-starter-cloud</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--lombok + mapstruct start-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!--lombok + mapstruct end-->
+        <!-- Oracle OCI SDK for HSM/KMS -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-keymanagement</artifactId>
+            <version>3.45.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-common</artifactId>
+            <version>3.45.0</version>
+        </dependency>
+        <!-- OCI Java SDK HTTP 客户端提供程序 -->
+        <dependency>
+            <groupId>com.oracle.oci.sdk</groupId>
+            <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+            <version>3.45.0</version>
+        </dependency>
+        <!-- JAX-RS API (required by Jersey HTTP client) -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <!-- Jersey Client (required by OCI SDK Jersey HTTP provider) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Jakarta Inject API (required by Jersey HTTP client for OCI SDK) -->
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <!-- Jersey Media JSON Jackson (required for JSON serialization) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Jersey HK2 Integration (required for dependency injection) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- HK2 API (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- HK2 Locator (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- HK2 Utils (required by Jersey HK2 integration) -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-utils</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <!-- Jersey Apache Connector (required by OCI SDK, use correct version) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-apache-connector</artifactId>
+            <version>2.40</version>
+        </dependency>
+        <!-- Apache HttpClient (required by Jersey Apache Connector) -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+        <!-- oracle start-->
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-framework-starter-database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-cloud-database-resources</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ares.cloud</groupId>
+            <artifactId>ares-framework-starter-oracle-wallet</artifactId>
+        </dependency>
+        <!-- oracle end-->
+        <!-- Druid Connection Pool -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- Druid Connection Pool end-->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.ares.cloud.AuditApplication</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+

@@ -3,15 +3,14 @@ package org.ares.cloud.api;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.ares.cloud.api.auth.dto.OcidHsmDto;
-import org.ares.cloud.common.model.Result;
 import org.ares.cloud.service.OracleHsmService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth/oracle/hsm/v1")
+@RequestMapping("/api/audit/oracle/hsm/v1")
 @Tag(name = "oracle HSM服务")
-public class AuthOracleHsmController {
+public class AuditOracleHsmController {
 
     @Resource
     private OracleHsmService oracleHsmService;
@@ -37,3 +36,4 @@ public class AuthOracleHsmController {
     }
 
 }
+

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component
 public class AuthOracleHsmClientFallback implements AuthOracleHsmClient {
 
-    private static final String SERVICE_NAME = "ares-cloud-auth-center";
+    private static final String SERVICE_NAME = "ares-cloud-audit";
 
     @Override
     public String sign(@Validated(OcidHsmDto.SignGroup.class) @RequestBody OcidHsmDto ocidHsmDto) {

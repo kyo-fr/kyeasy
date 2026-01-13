@@ -15,6 +15,7 @@
     <modules>
         <module>ares-cloud-gateway</module>
         <module>ares-cloud-auth-center</module>
+        <module>ares-cloud-audit</module>
         <module>ares-cloud-database-resources</module>
     </modules>
     <properties>

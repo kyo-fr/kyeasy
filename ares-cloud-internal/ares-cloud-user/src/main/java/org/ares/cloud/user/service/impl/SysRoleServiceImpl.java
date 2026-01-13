@@ -137,6 +137,8 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleRepository, SysRo
     @Override
     public PageResult<SysRoleEntity> pageList(Query query) {
         LambdaQueryWrapper<SysRoleEntity> wrapper = getWrapper(query);
+        // 添加查询条件：只查询未删除的记录
+        wrapper.eq(SysRoleEntity::getDeleted, 0);
         IPage<SysRoleEntity> page = page(getPage(query), wrapper);
         return new PageResult<>(page.getRecords(), page.getTotal());
     }

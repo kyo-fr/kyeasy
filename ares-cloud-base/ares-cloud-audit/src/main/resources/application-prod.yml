@@ -1,0 +1,79 @@
+spring:
+  data:
+    redis:
+      database: 1
+      host: localhost
+      port: 6379
+      password: "LZLlzl12345"
+      timeout: 6000ms  # 连接超时时长（毫秒）
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://141.253.123.26:18848 # Nacos 服务地址
+        username: nacos
+        password: nacos
+        enabled: true  # 启用服务发现，如果 Nacos 不可用，可以设置为 false 禁用
+        namespace: public  # 命名空间，确保与 base-service 一致
+        group: DEFAULT_GROUP  # 服务组，确保与 base-service 一致
+    # LoadBalancer 配置（用于服务发现）
+    loadbalancer:
+      retry:
+        enabled: true  # 启用重试
+    # Feign 客户端配置
+    openfeign:
+      client:
+        config:
+          # 全局默认配置（如果没有指定特定服务的配置，使用这些默认值）
+          default:
+            connectTimeout: 10000  # 默认连接超时时间（毫秒）
+            readTimeout: 60000    # 默认读取超时时间（毫秒），增加到 6 秒
+  datasource:
+    url: jdbc:oracle:thin:@test1_medium
+    username: admin
+    password: 5588@TYkser*&dfhg
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5                   # 初始化时建立物理连接的个数
+      max-active: 20                    # 连接池最大连接数
+      min-idle: 5                       # 最小连接池大小
+      max-wait: 60000                   # 获取连接时最大等待时间（毫秒）
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1        # 验证连接有效性SQL
+      test-while-idle: true             # 是否在空闲时检查连接
+      test-on-borrow: false             # 是否在获取连接时检查连接
+      test-on-return: false             # 是否在归还连接时检查连接
+      pool-prepared-statements: true    # 是否启用PSCache
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j2          # 配置监控统计、SQL防火墙、日志
+
+logging:
+  level:
+    com.baomidou.mybatisplus.core.mapper: debug    # 打印 Mapper 层的 SQL 日志
+    org.apache.ibatis.executor: debug             # 打印 SQL 执行的日志
+    com.baomidou.mybatisplus: debug
+    org.apache.ibatis: debug
+    # Feign 和 LoadBalancer 调试日志
+    org.springframework.cloud.openfeign: debug  # Feign 客户端调试日志
+    org.springframework.cloud.loadbalancer: debug  # LoadBalancer 调试日志
+    org.springframework.cloud.nacos.discovery: debug  # Nacos 服务发现调试日志
+    feign: debug  # Feign 框架调试日志
+    # Nacos 客户端日志（用于排查服务发现问题）
+    com.alibaba.nacos: info  # Nacos 客户端日志
+    com.alibaba.cloud.nacos: info  # Spring Cloud Alibaba Nacos 日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 和参数
+    jdbc-type-for-null: VARCHAR  # Oracle 数据库必须设置，解决 null 值参数问题
+
+
+#管理配置
+ares:
+  cloud:
+    super-admin:
+      nickname: "超级管理员"
+      account: "+33625823391"
+      password: "jinghui111"
+
+
