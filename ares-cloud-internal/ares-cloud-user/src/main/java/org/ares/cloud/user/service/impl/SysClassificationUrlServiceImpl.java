@@ -2,13 +2,16 @@ package org.ares.cloud.user.service.impl;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.commons.lang3.StringUtils;
 import org.ares.cloud.api.auth.AuthOracleHsmClient;
 import org.ares.cloud.api.auth.dto.OcidHsmDto;
 import org.ares.cloud.api.base.BusinessIdServerClient;
 import org.ares.cloud.api.user.dto.SysClassificationUrlDto;
 import org.ares.cloud.common.context.ApplicationContext;
+import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.exception.RequestBadException;
+import org.ares.cloud.common.query.Query;
 import org.ares.cloud.common.utils.DateUtils;
 import org.ares.cloud.database.service.impl.BaseServiceImpl;
 import org.ares.cloud.api.auth.properties.HsmProperties;
@@ -160,6 +163,24 @@ public class SysClassificationUrlServiceImpl extends BaseServiceImpl<SysClassifi
 
         SysClassificationUrlEntity entity = getOne(wrapper);
         return entity != null ? entity.getId() : null;
+    }
+
+    @Override
+    public PageResult<SysClassificationUrlEntity> pageList(Query query) {
+        LambdaQueryWrapper<SysClassificationUrlEntity> wrapper = getWrapper(query);
+
+        // 添加查询条件：只查询未删除的记录
+        wrapper.eq(SysClassificationUrlEntity::getDeleted, 0);
+
+        // 如果有关键字，可以按角色ID或URL ID搜索
+        if (StringUtils.isNotBlank(query.getKeyword())) {
+            wrapper.and(w -> w.like(SysClassificationUrlEntity::getUrl, query.getKeyword())
+                    .or()
+                    .like(SysClassificationUrlEntity::getClassificationId, query.getKeyword()));
+        }
+
+        IPage<SysClassificationUrlEntity> page = page(getPage(query), wrapper);
+        return new PageResult<>(page.getRecords(), page.getTotal());
     }
 
     /**

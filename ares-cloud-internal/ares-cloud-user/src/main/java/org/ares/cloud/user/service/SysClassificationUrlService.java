@@ -45,4 +45,11 @@ public interface SysClassificationUrlService extends BaseService<SysClassificati
      */
     String getUrlIdByUrl(String url);
 
+    /**
+     * 查询角色URL关系分页列表
+     * @param query 查询参数
+     * @return 分页结果
+     */
+    PageResult<SysClassificationUrlEntity> pageList(Query query);
+
 }
