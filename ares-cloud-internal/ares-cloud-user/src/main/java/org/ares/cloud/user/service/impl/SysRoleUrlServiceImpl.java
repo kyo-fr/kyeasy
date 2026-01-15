@@ -15,9 +15,11 @@ import org.ares.cloud.common.query.Query;
 import org.ares.cloud.common.utils.DateUtils;
 import org.ares.cloud.database.service.impl.BaseServiceImpl;
 import org.ares.cloud.api.auth.properties.HsmProperties;
+import org.ares.cloud.user.entity.SysClassificationUrlEntity;
 import org.ares.cloud.user.entity.SysRoleEntity;
 import org.ares.cloud.user.entity.SysRoleUrlEntity;
 import org.ares.cloud.user.repository.SysRoleUrlRepository;
+import org.ares.cloud.user.service.SysClassificationUrlService;
 import org.ares.cloud.user.service.SysRoleService;
 import org.ares.cloud.user.service.SysRoleUrlService;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +47,8 @@ public class SysRoleUrlServiceImpl extends BaseServiceImpl<SysRoleUrlRepository,
     private BusinessIdServerClient businessIdServerClient;
     @Resource
     private SysRoleService sysRoleService;
+    @Resource
+    private SysClassificationUrlService sysClassificationUrlService;
     @Resource
     private AuthOracleHsmClient authOracleHsmClient;
     @Resource
@@ -126,20 +130,91 @@ public class SysRoleUrlServiceImpl extends BaseServiceImpl<SysRoleUrlRepository,
      */
     @Override
     public PageResult<SysRoleUrlEntity> pageList(Query query) {
+        // 第一步：构建查询条件，只查询 urlId 字段以减少数据传输
         LambdaQueryWrapper<SysRoleUrlEntity> wrapper = getWrapper(query);
-
-        // 添加查询条件：只查询未删除的记录
         wrapper.eq(SysRoleUrlEntity::getDeleted, 0);
-
         // 如果有关键字，可以按角色ID或URL ID搜索
         if (StringUtils.isNotBlank(query.getKeyword())) {
             wrapper.and(w -> w.like(SysRoleUrlEntity::getRoleId, query.getKeyword())
                     .or()
                     .like(SysRoleUrlEntity::getUrlId, query.getKeyword()));
         }
+        // 只查询 urlId 字段，减少数据传输
+        wrapper.select(SysRoleUrlEntity::getUrlId);
 
-        IPage<SysRoleUrlEntity> page = page(getPage(query), wrapper);
-        return new PageResult<>(page.getRecords(), page.getTotal());
+        // 查询所有符合条件的 urlId（只查询 urlId 字段，减少数据传输）
+        List<SysRoleUrlEntity> urlIdRecords = list(wrapper);
+        if (CollectionUtils.isEmpty(urlIdRecords)) {
+            return new PageResult<>(List.of(), 0L);
+        }
+
+        // 获取所有不重复的 urlId
+        List<String> distinctUrlIds = urlIdRecords.stream()
+                .map(SysRoleUrlEntity::getUrlId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 第二步：手动分页 urlId 列表
+        int page = query.getPage();
+        int limit = query.getLimit();
+        int total = distinctUrlIds.size();
+        int start = (page - 1) * limit;
+        int end = Math.min(start + limit, total);
+
+        List<String> pagedUrlIds = start < total ? distinctUrlIds.subList(start, end) : List.of();
+
+        if (CollectionUtils.isEmpty(pagedUrlIds)) {
+            return new PageResult<>(List.of(), (long) total);
+        }
+
+        // 第三步：批量查询分页后的 urlId 对应的所有 roleId 和 roleName
+        LambdaQueryWrapper<SysRoleUrlEntity> detailWrapper = new LambdaQueryWrapper<>();
+        detailWrapper.eq(SysRoleUrlEntity::getDeleted, 0);
+        detailWrapper.in(SysRoleUrlEntity::getUrlId, pagedUrlIds);
+        // 只查询需要的字段：urlId, roleId, roleName
+        detailWrapper.select(SysRoleUrlEntity::getUrlId, SysRoleUrlEntity::getRoleId, SysRoleUrlEntity::getRoleName);
+        List<SysRoleUrlEntity> detailRecords = list(detailWrapper);
+
+        // 第四步：按 urlId 分组，组装 roleList
+        Map<String, List<SysRoleUrlEntity>> urlIdGroupMap = detailRecords.stream()
+                .collect(Collectors.groupingBy(SysRoleUrlEntity::getUrlId));
+
+        // 第五步：查询 urlName
+        LambdaQueryWrapper<SysClassificationUrlEntity> classUrlWrapper = new LambdaQueryWrapper<>();
+        classUrlWrapper.eq(SysClassificationUrlEntity::getDeleted, 0);
+        classUrlWrapper.in(SysClassificationUrlEntity::getId, pagedUrlIds);
+        List<SysClassificationUrlEntity> urlEntityList = sysClassificationUrlService.list(classUrlWrapper);
+        Map<String, String> urlNameMap = urlEntityList.stream()
+                .collect(Collectors.toMap(SysClassificationUrlEntity::getId, SysClassificationUrlEntity::getUrl));
+
+        // 第六步：组装结果
+        List<SysRoleUrlEntity> resultList = new ArrayList<>();
+        for (String urlId : pagedUrlIds) {
+            SysRoleUrlEntity entity = new SysRoleUrlEntity();
+            entity.setUrlId(urlId);
+
+            // 设置 urlName
+            if (urlNameMap.containsKey(urlId)) {
+                entity.setUrlName(urlNameMap.get(urlId));
+            }
+
+            // 设置 roleList
+            if (urlIdGroupMap.containsKey(urlId)) {
+                List<SysRoleUrlEntity> roleUrlEntities = urlIdGroupMap.get(urlId);
+                List<SysRoleEntity> roleList = new ArrayList<>();
+                for (SysRoleUrlEntity roleUrlEntity : roleUrlEntities) {
+                    SysRoleEntity roleEntity = new SysRoleEntity();
+                    roleEntity.setId(roleUrlEntity.getRoleId());
+                    roleEntity.setRoleName(roleUrlEntity.getRoleName());
+                    roleList.add(roleEntity);
+                }
+                entity.setRoleList(roleList);
+            }
+
+            resultList.add(entity);
+        }
+
+        return new PageResult<>(resultList, (long) total);
     }
 
     @Override

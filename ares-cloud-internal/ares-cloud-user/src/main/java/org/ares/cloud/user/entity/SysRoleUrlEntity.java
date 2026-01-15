@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -27,16 +28,27 @@ public class SysRoleUrlEntity implements Serializable {
     /**
      * 接口URL表主键ID（关联分类-URL表）
      */
-    @Schema(description = "接口URL表主键ID（关联分类-URL表）")
+    @Schema(description = "URL ID")
     @TableField("URL_ID")
     private String urlId;
+
+    @TableField(exist = false)
+    @Schema(description = "URL名称")
+    private String urlName;
 
     /**
      * 角色表主键ID（关联角色表）
      */
-    @Schema(description = "角色表主键ID（关联角色表）")
+    @Schema(description = "角色ID")
     @TableField("ROLE_ID")
     private String roleId;
+
+    /**
+     * 角色名称
+     */
+    @Schema(description = "角色名称")
+    @TableField("ROLE_NAME")
+    private String roleName;
 
     /**
      * 状态(1:正常,2:停用)，默认值1
@@ -85,12 +97,6 @@ public class SysRoleUrlEntity implements Serializable {
     private String updater;
 
     /**
-     * 角色名称
-     */
-    @TableField("ROLE_NAME")
-    private String roleName;
-
-    /**
      * 数据签名
      */
     @TableField("DATA_SIGNATURE")
@@ -131,5 +137,8 @@ public class SysRoleUrlEntity implements Serializable {
 
     @TableField(exist = false)
     private Set<String> roleIdList;
+
+    @TableField(exist = false)
+    private List<SysRoleEntity> roleList;
 
 }
