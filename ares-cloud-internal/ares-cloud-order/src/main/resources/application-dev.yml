@@ -32,7 +32,7 @@ spring:
   datasource:
     url: jdbc:oracle:thin:@test1_medium
     username: admin
-    password: 5588@TYkser*&dfhg
+    password: Ysajghfj@sgh7485.ewq
     driver-class-name: oracle.jdbc.OracleDriver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:

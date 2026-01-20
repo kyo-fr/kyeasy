@@ -121,4 +121,10 @@ public class SysClassificationUrlEntity implements Serializable {
     @TableField("SIGN_ALGORITHM")
     private String signAlgorithm;
 
+    /**
+     * 方法类型
+     */
+    @TableField("METHOD_TYPE")
+    private String methodType;
+
 }
