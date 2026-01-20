@@ -136,7 +136,7 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
                     .or()
                     .like(SysUserRoleEntity::getRoleId, query.getKeyword()));
         }
-        wrapper.orderByDesc(SysUserRoleEntity::getCreateTime);
+        wrapper.orderByAsc(SysUserRoleEntity::getCreateTime);
         IPage<SysUserRoleEntity> page = page(getPage(query), wrapper);
         return new PageResult<>(page.getRecords(), page.getTotal());
     }

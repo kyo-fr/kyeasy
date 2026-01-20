@@ -119,7 +119,7 @@ public class SysClassificationUrlServiceImpl extends BaseServiceImpl<SysClassifi
         LambdaQueryWrapper<SysClassificationUrlEntity> urlWrapper = new LambdaQueryWrapper<>();
         urlWrapper.eq(SysClassificationUrlEntity::getClassificationId, classificationId);
         urlWrapper.eq(SysClassificationUrlEntity::getDeleted, 0);
-        urlWrapper.orderByDesc(SysClassificationUrlEntity::getCreateTime);
+        urlWrapper.orderByAsc(SysClassificationUrlEntity::getCreateTime);
         List<SysClassificationUrlEntity> urlEntityList = this.list(urlWrapper);
         if (CollectionUtils.isNotEmpty(urlEntityList)) {
             for (SysClassificationUrlEntity urlEntity : urlEntityList) {
@@ -179,7 +179,7 @@ public class SysClassificationUrlServiceImpl extends BaseServiceImpl<SysClassifi
                     .or()
                     .like(SysClassificationUrlEntity::getClassificationId, query.getKeyword()));
         }
-        wrapper.orderByDesc(SysClassificationUrlEntity::getCreateTime);
+        wrapper.orderByAsc(SysClassificationUrlEntity::getCreateTime);
         IPage<SysClassificationUrlEntity> page = page(getPage(query), wrapper);
         return new PageResult<>(page.getRecords(), page.getTotal());
     }
