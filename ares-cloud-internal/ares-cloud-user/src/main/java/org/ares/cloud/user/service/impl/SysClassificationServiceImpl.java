@@ -135,6 +135,7 @@ public class SysClassificationServiceImpl extends BaseServiceImpl<SysClassificat
         LambdaQueryWrapper<SysClassificationEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysClassificationEntity::getDeleted, 0); // 只查询未删除的数据
         wrapper.eq(SysClassificationEntity::getParentId, "0");
+        wrapper.orderByDesc(SysClassificationEntity::getCreateTime);
         // 查询所有根节点
         List<SysClassificationEntity> rootEntities = this.list(wrapper);
         if (rootEntities.isEmpty()) {
@@ -143,6 +144,7 @@ public class SysClassificationServiceImpl extends BaseServiceImpl<SysClassificat
         // 查询所有数据用于构建树
         LambdaQueryWrapper<SysClassificationEntity> allWrapper = new LambdaQueryWrapper<>();
         allWrapper.eq(SysClassificationEntity::getDeleted, 0);
+        allWrapper.orderByDesc(SysClassificationEntity::getCreateTime);
         List<SysClassificationEntity> allEntities = this.list(allWrapper);
         // 构建树形结构
         List<SysClassificationDto> result = new ArrayList<>();
