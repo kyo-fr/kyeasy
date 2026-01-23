@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -37,6 +38,20 @@ public class SysUserRoleEntity implements Serializable {
     @Schema(description = "角色ID")
     @TableField("ROLE_ID")
     private String roleId;
+
+    /**
+     * 国家代码
+     */
+    @Schema(description = "国家代码", example = "+33")
+    @TableField(exist = false)
+    private String countryCode;
+
+    /**
+     * 用户手机号
+     */
+    @Schema(description = "用户手机号")
+    @TableField(exist = false)
+    private String phone;
 
     /**
      * 状态(1:正常,2:停用)，默认值1

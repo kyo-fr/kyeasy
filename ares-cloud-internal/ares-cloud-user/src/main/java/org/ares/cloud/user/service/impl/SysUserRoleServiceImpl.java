@@ -1,5 +1,6 @@
 package org.ares.cloud.user.service.impl;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.commons.lang3.StringUtils;
@@ -8,14 +9,19 @@ import org.ares.cloud.api.auth.dto.OcidHsmDto;
 import org.ares.cloud.api.base.BusinessIdServerClient;
 import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.dto.PageResult;
+import org.ares.cloud.common.exception.BusinessException;
 import org.ares.cloud.common.exception.RequestBadException;
 import org.ares.cloud.common.query.Query;
 import org.ares.cloud.common.utils.DateUtils;
 import org.ares.cloud.database.service.impl.BaseServiceImpl;
 import org.ares.cloud.api.auth.properties.HsmProperties;
+import org.ares.cloud.user.entity.SysRoleEntity;
 import org.ares.cloud.user.entity.SysUserRoleEntity;
+import org.ares.cloud.user.entity.UserEntity;
 import org.ares.cloud.user.repository.SysUserRoleRepository;
+import org.ares.cloud.user.service.SysRoleService;
 import org.ares.cloud.user.service.SysUserRoleService;
+import org.ares.cloud.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +30,7 @@ import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * 用户角色关系服务实现类
@@ -37,6 +44,8 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
     private AuthOracleHsmClient authOracleHsmClient;
     @Resource
     private HsmProperties hsmProperties;
+    @Resource
+    private UserService userService;
 
     /**
      * 签名算法常量
@@ -51,8 +60,11 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(SysUserRoleEntity entity) {
-        if (entity == null) {
-            return false;
+        if (entity == null || StringUtils.isBlank(entity.getRoleId()) || StringUtils.isBlank(entity.getPhone())) {
+            throw new BusinessException("角色和手机号都不得为空");
+        }
+        if (StringUtils.isBlank(entity.getCountryCode())) {
+            entity.setCountryCode("+33");
         }
         // 如果是新增（ID为空），则生成唯一ID并设置创建信息
         // 生成唯一的主键ID
@@ -62,6 +74,26 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
         String userId = ApplicationContext.getUserId();
         if (StringUtils.isNotBlank(userId)) {
             entity.setCreator(userId);
+        }
+        if (StringUtils.isNotBlank(entity.getPhone())) {
+            // 查询用户
+            LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(UserEntity::getDeleted, 0);
+            wrapper.eq(UserEntity::getCountryCode, entity.getCountryCode());
+            wrapper.eq(UserEntity::getPhone, entity.getPhone());
+            List<UserEntity> userlist = userService.list(wrapper);
+            if (CollectionUtils.isEmpty(userlist)) {
+                throw new BusinessException("此手机号还没有注册，请先注册");
+            }
+            // 校验用户是否已关联角色，一个用户只关联一个角色
+            LambdaQueryWrapper<SysUserRoleEntity> userRoleWrapper = new LambdaQueryWrapper<>();
+            userRoleWrapper.eq(SysUserRoleEntity::getDeleted, 0);
+            userRoleWrapper.eq(SysUserRoleEntity::getUserId, userlist.get(0).getId());
+            List<SysUserRoleEntity> userRoleList = this.list(userRoleWrapper);
+            if (CollectionUtils.isNotEmpty(userRoleList)) {
+                throw new BusinessException("此用户已关联角色，不可再次添加");
+            }
+            entity.setUserId(userlist.get(0).getId());
         }
         // 设置创建时间
         long currentTime = DateUtils.getCurrentTimestampInUTC();
