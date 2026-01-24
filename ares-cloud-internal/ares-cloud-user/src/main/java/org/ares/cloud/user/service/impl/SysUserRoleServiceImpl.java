@@ -48,6 +48,8 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
     private HsmProperties hsmProperties;
     @Resource
     private UserService userService;
+    @Resource
+    private SysRoleService sysRoleService;
 
     /**
      * 签名算法常量
@@ -187,6 +189,24 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
                             if (map.get(entity.getUserId()) != null) {
                                 entity.setPhone(map.get(entity.getUserId()).getPhone());
                                 entity.setCountryCode(map.get(entity.getUserId()).getCountryCode());
+                            }
+                        }
+                    }
+                }
+            }
+            List<String> roleIdList = page.getRecords().stream().map(SysUserRoleEntity::getRoleId).toList();
+            if (CollectionUtils.isNotEmpty(roleIdList)) {
+                // 查询角色信息
+                LambdaQueryWrapper<SysRoleEntity> roleWrapper = new LambdaQueryWrapper<>();
+                roleWrapper.eq(SysRoleEntity::getDeleted, 0);
+                roleWrapper.in(SysRoleEntity::getId, roleIdList);
+                List<SysRoleEntity> roleEntityList = sysRoleService.list(roleWrapper);
+                if (CollectionUtils.isNotEmpty(roleEntityList)) {
+                    Map<String, SysRoleEntity> map = roleEntityList.stream().collect(Collectors.toMap(SysRoleEntity::getId, v -> v));
+                    for (SysUserRoleEntity entity : page.getRecords()) {
+                        if (map.containsKey(entity.getRoleId())) {
+                            if (map.get(entity.getRoleId()) != null) {
+                                entity.setRoleName(map.get(entity.getRoleId()).getRoleName());
                             }
                         }
                     }

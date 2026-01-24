@@ -40,6 +40,13 @@ public class SysUserRoleEntity implements Serializable {
     private String roleId;
 
     /**
+     * 角色名称
+     */
+    @Schema(description = "角色名称")
+    @TableField(exist = false)
+    private String roleName;
+
+    /**
      * 国家代码
      */
     @Schema(description = "国家代码", example = "+33")
