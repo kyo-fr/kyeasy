@@ -31,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 用户角色关系服务实现类
@@ -170,6 +172,27 @@ public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRoleRepositor
         }
         wrapper.orderByAsc(SysUserRoleEntity::getCreateTime);
         IPage<SysUserRoleEntity> page = page(getPage(query), wrapper);
+        if (CollectionUtils.isNotEmpty(page.getRecords())) {
+            List<String> userIdList = page.getRecords().stream().map(SysUserRoleEntity::getUserId).toList();
+            if (CollectionUtils.isNotEmpty(userIdList)) {
+                // 查询用户信息
+                LambdaQueryWrapper<UserEntity> userWrapper = new LambdaQueryWrapper<>();
+                userWrapper.eq(UserEntity::getDeleted, 0);
+                userWrapper.in(UserEntity::getId, userIdList);
+                List<UserEntity> entityList = userService.list(userWrapper);
+                if (CollectionUtils.isNotEmpty(entityList)) {
+                    Map<String, UserEntity> map = entityList.stream().collect(Collectors.toMap(UserEntity::getId, v -> v));
+                    for (SysUserRoleEntity entity : page.getRecords()) {
+                        if (map.containsKey(entity.getUserId())) {
+                            if (map.get(entity.getUserId()) != null) {
+                                entity.setPhone(map.get(entity.getUserId()).getPhone());
+                                entity.setCountryCode(map.get(entity.getUserId()).getCountryCode());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return new PageResult<>(page.getRecords(), page.getTotal());
     }
 
