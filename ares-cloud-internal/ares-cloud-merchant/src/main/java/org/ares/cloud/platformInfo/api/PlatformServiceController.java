@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.platformInfo.dto.PlatformServiceDto;
@@ -36,6 +37,7 @@ public class PlatformServiceController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformService:page')")
     public Result<PageResult<PlatformServiceDto>> page(@ParameterObject @Valid PlatformServiceQuery query){
         PageResult<PlatformServiceDto> page = platformServiceService.loadList(query);
@@ -46,6 +48,7 @@ public class PlatformServiceController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('platformInfo:PlatformService:all')")
     public  Result<List<PlatformServiceDto>> all(){
         List<PlatformServiceDto> all = platformServiceService.loadAll();
@@ -61,6 +64,7 @@ public class PlatformServiceController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformService:info')")
     public Result<PlatformServiceDto> get(@PathVariable("id") String id){
          PlatformServiceDto dto= platformServiceService.loadById(id);
@@ -70,6 +74,7 @@ public class PlatformServiceController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformService:save')")
     public Result<String> save(@RequestBody @Valid PlatformServiceDto dto){
         platformServiceService.create(dto);
@@ -78,6 +83,7 @@ public class PlatformServiceController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformService:update')")
     public Result<String> update(@RequestBody @Valid PlatformServiceDto dto){
         platformServiceService.update(dto);
@@ -93,6 +99,7 @@ public class PlatformServiceController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformService:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         platformServiceService.deleteById(id);

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.exception.RpcCallException;
@@ -40,6 +41,7 @@ public class PlatformApprovalController {
 
     @GetMapping("page")
     @Operation(summary = "分页(审批列表)")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformApproval:page')")
     public Result<PageResult<PlatformApprovalVo>> page(@ParameterObject @Valid PlatformApprovalQuery query){
         PageResult<PlatformApprovalVo> page = platformApprovalService.loadList(query);
@@ -53,12 +55,14 @@ public class PlatformApprovalController {
      */
     @GetMapping("page/income")
     @Operation(summary = "分页(收入列表)")
+    @RequireUrlPermission
     public Result<PageResult<PlatformApprovalVo>> income(@ParameterObject @Valid PlatformApprovalQuery query){
         PageResult<PlatformApprovalVo> page = platformApprovalService.income(query);
         return Result.success(page);
     }
 
     @Operation(summary = "获取所有")
+    @RequireUrlPermission
 //    @GetMapping("/all")
     // @PreAuthorize("hasAuthority('platformInfo:PlatformApproval:all')")
     public  Result<List<PlatformApprovalDto>> all(){
@@ -75,6 +79,7 @@ public class PlatformApprovalController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformApproval:info')")
     public Result<PlatformApprovalVo> get(@PathVariable("id") String id){
         PlatformApprovalVo dto= platformApprovalService.loadById(id);
@@ -84,6 +89,7 @@ public class PlatformApprovalController {
 
     @PostMapping
     @Operation(summary = "审批保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformApproval:save')")
     public Result<PlatformApprovalDto> save(@RequestBody @Valid PlatformApprovalDto dto){
         try {
@@ -95,6 +101,7 @@ public class PlatformApprovalController {
 
     @GetMapping("/getApprovalByUserId")
     @Operation(summary = "根据用户查询审批单-ipad端使用",description = "ipad端使用")
+    @RequireUrlPermission
     public Result<PlatformApprovalDto> getApprovalByUserId(@RequestParam("userId") String userId) {
         PlatformApprovalDto dto= platformApprovalService.getApprovalByUserId(userId);
         return Result.success(dto);
@@ -103,6 +110,7 @@ public class PlatformApprovalController {
 
     @PostMapping("/manualSettlementOrder")
     @Operation(summary = "审批单核算")
+    @RequireUrlPermission
     public Result<String> manualSettlementOrder(@RequestBody @Valid PlatformApprovalSettlementDto platformApprovalSettlementDto){
 //        try {
             platformApprovalService.manualSettlementOrder(platformApprovalSettlementDto);
@@ -115,6 +123,7 @@ public class PlatformApprovalController {
 
     @PostMapping("/counts")
     @Operation(summary = "管理端首页存储使用统计")
+    @RequireUrlPermission
     public Result<PlatformApprovalRecordVo> counts(){
         PlatformApprovalRecordVo dto=   platformApprovalService.counts();
         return Result.success(dto);

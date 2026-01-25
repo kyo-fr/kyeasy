@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
@@ -139,6 +140,7 @@ public class MerchantController {
     }
     @GetMapping("/platform/flows")
     @Operation(summary = "查询平台交易流水", description = "查询平台的交易流水")
+    @RequireUrlPermission
     public Result<PageResult<AccountFlowDTO>> getPlatformFlows(@ParameterObject @Valid PlatformFlowQuery query) {
         PageResult<AccountFlowDTO> result = accountFlowQueryHandler.getPlatformFlows(query);
         return Result.success(result);

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.springdoc.core.annotations.ParameterObject;
@@ -40,6 +41,7 @@ public class PlatformSubscribeController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
     public Result<PageResult<PlatformSubscribeDto>> page(@ParameterObject @Valid PlatformSubscribeQuery query){
         PageResult<PlatformSubscribeDto> page = platformSubscribeService.loadList(query);
         return Result.success(page);
@@ -48,6 +50,7 @@ public class PlatformSubscribeController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     public  Result<List<PlatformSubscribeDto>> all(){
         List<PlatformSubscribeDto> all = platformSubscribeService.loadAll();
         return Result.success(all);
@@ -62,6 +65,7 @@ public class PlatformSubscribeController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     public Result<PlatformSubscribeDto> get(@PathVariable("id") String id){
          PlatformSubscribeDto dto= platformSubscribeService.loadById(id);
          return Result.success(dto);
@@ -70,6 +74,7 @@ public class PlatformSubscribeController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
     public Result<String> save(@RequestBody @Valid PlatformSubscribeDto dto){
         platformSubscribeService.create(dto);
         return Result.success();
@@ -77,6 +82,7 @@ public class PlatformSubscribeController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformSubscribe:update')")
     public Result<String> update(@RequestBody @Valid PlatformSubscribeDto dto){
         platformSubscribeService.update(dto);
@@ -92,6 +98,7 @@ public class PlatformSubscribeController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformSubscribe:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         platformSubscribeService.deleteById(id);

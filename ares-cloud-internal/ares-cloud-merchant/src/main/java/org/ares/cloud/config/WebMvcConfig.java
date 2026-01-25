@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Web MVC 配置
- * 处理静态资源请求，避免 NoResourceFoundException
+ * 处理静态资源请求和注册URL权限拦截器
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

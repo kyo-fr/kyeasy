@@ -52,4 +52,11 @@ public interface SysClassificationUrlService extends BaseService<SysClassificati
      */
     PageResult<SysClassificationUrlEntity> pageList(Query query);
 
+    /**
+     * 根据角色ID联表查询URL列表
+     * @param roleId 角色ID
+     * @return URL列表
+     */
+    List<SysClassificationUrlEntity> selectUrlsByRoleId(String roleId);
+
 }

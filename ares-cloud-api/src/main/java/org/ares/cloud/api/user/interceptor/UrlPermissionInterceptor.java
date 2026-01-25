@@ -1,28 +1,22 @@
-package org.ares.cloud.user.interceptor;
+package org.ares.cloud.api.user.interceptor;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
+import cn.hutool.core.collection.CollectionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.ares.cloud.api.user.dto.SysRoleUrlDto;
+import org.ares.cloud.api.user.UserPermissionClient;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
+import org.ares.cloud.api.user.dto.SysClassificationUrlDto;
+import org.ares.cloud.api.user.dto.SysUserRoleDto;
 import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.enums.ResponseCodeEnum;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.JsonUtils;
-import org.ares.cloud.user.annotation.RequireUrlPermission;
-import org.ares.cloud.user.entity.SysRoleUrlEntity;
-import org.ares.cloud.user.entity.SysUserRoleEntity;
-import org.ares.cloud.user.service.SysClassificationUrlService;
-import org.ares.cloud.user.service.SysRoleUrlService;
-import org.ares.cloud.user.service.SysUserRoleService;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author hugo tangxkwork@163.com
@@ -30,20 +24,12 @@ import java.util.stream.Collectors;
  * @version 1.0.0
  * @date 2024-10-11
  */
-@Component
 public class UrlPermissionInterceptor implements HandlerInterceptor {
 
-    private final SysClassificationUrlService sysClassificationUrlService;
-    private final SysRoleUrlService sysRoleUrlService;
-    private final SysUserRoleService sysUserRoleService;
+    private final UserPermissionClient userPermissionClient;
 
-    public UrlPermissionInterceptor(
-            SysClassificationUrlService sysClassificationUrlService,
-            SysRoleUrlService sysRoleUrlService,
-            SysUserRoleService sysUserRoleService) {
-        this.sysClassificationUrlService = sysClassificationUrlService;
-        this.sysRoleUrlService = sysRoleUrlService;
-        this.sysUserRoleService = sysUserRoleService;
+    public UrlPermissionInterceptor(UserPermissionClient userPermissionClient) {
+        this.userPermissionClient = userPermissionClient;
     }
 
     @Override
@@ -73,6 +59,9 @@ public class UrlPermissionInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        // 获取请求方法（GET、POST等）
+        String requestMethod = request.getMethod();
+
         // 从ApplicationContext获取用户ID
         String userId = ApplicationContext.getUserId();
         if (StringUtils.isBlank(userId)) {
@@ -81,46 +70,39 @@ public class UrlPermissionInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // 根据URL查询URL_ID
-        String urlId = sysClassificationUrlService.getUrlIdByUrl(requestUrl);
-        if (StringUtils.isBlank(urlId)) {
-            // URL未在系统中配置，默认放行（或者可以根据业务需求返回错误）
-            return true;
-        }
-
-        // 根据URL_ID查询关联的角色ID列表
-        SysRoleUrlEntity entity = new SysRoleUrlEntity();
-        entity.setUrlId(urlId);
-        List<SysRoleUrlDto> urlDtoList = sysRoleUrlService.getRoleIdsByUrlIds(entity);
-        if (CollectionUtils.isEmpty(urlDtoList)) {
-            // URL未关联任何角色，默认放行（或者可以根据业务需求返回错误）
-            return true;
-        }
-
-        // 根据用户ID查询用户关联的角色ID列表
-        SysUserRoleEntity userRoleEntity = sysUserRoleService.getRoleIdsByUserId(userId);
-        if (userRoleEntity == null) {
+        // 通过Feign调用user服务获取用户角色
+        SysUserRoleDto userRoleDto = userPermissionClient.getRoleByUserId(userId);
+        if (userRoleDto == null || StringUtils.isBlank(userRoleDto.getRoleId())) {
             // 用户没有角色，返回403
             writeErrorResponse(response, ResponseCodeEnum.RECODE_NOT_POWER, "您没有访问此URL的权限");
             return false;
         }
 
-        // 判断用户角色是否在URL关联的角色中
-        Set<String> urlRoles = urlDtoList.stream().map(SysRoleUrlDto::getRoleId).collect(Collectors.toSet());
+        // 通过Feign调用user服务获取角色关联的URL列表
+        String roleId = userRoleDto.getRoleId();
+        List<SysClassificationUrlDto> urlDtoList = userPermissionClient.getUrlsByRoleId(roleId);
 
-        // 检查是否有交集
-        boolean hasPermission = false;
-        if (urlRoles.contains(userRoleEntity.getRoleId())) {
-            hasPermission = true;
-        }
-        if (!hasPermission) {
-            // 用户角色不在URL关联的角色中，返回403
+        // 如果查询为空，返回false
+        if (CollectionUtil.isEmpty(urlDtoList)) {
             writeErrorResponse(response, ResponseCodeEnum.RECODE_NOT_POWER, "您没有访问此URL的权限");
             return false;
         }
 
-        // 权限验证通过，放行
-        return true;
+        // 遍历URL名称，与requestUrl进行匹配
+        if (CollectionUtil.isNotEmpty(urlDtoList)) {
+            for (SysClassificationUrlDto urlDto : urlDtoList) {
+                String urlName = urlDto.getUrl();
+                if (StringUtils.isNotBlank(urlName) && requestUrl.contains(urlName)
+                        && requestMethod.equals(urlDto.getMethodType())) {
+                    // 匹配成功，返回true
+                    return true;
+                }
+            }
+        }
+
+        // 没有匹配的URL，返回false
+        writeErrorResponse(response, ResponseCodeEnum.RECODE_NOT_POWER, "您没有访问此URL的权限");
+        return false;
     }
 
     /**

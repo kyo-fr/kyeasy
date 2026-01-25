@@ -185,6 +185,19 @@ public class SysClassificationUrlServiceImpl extends BaseServiceImpl<SysClassifi
     }
 
     /**
+     * 根据角色ID联表查询URL列表
+     * @param roleId 角色ID
+     * @return URL列表
+     */
+    @Override
+    public List<SysClassificationUrlEntity> selectUrlsByRoleId(String roleId) {
+        if (StringUtils.isBlank(roleId)) {
+            return Collections.emptyList();
+        }
+        return getBaseMapper().selectUrlsByRoleId(roleId);
+    }
+
+    /**
      * 构造HSM相关信息
      * @param entity
      * @return

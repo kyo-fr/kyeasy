@@ -35,4 +35,10 @@ public class SysClassificationUrlDto implements Serializable {
     @Schema(description = "状态(1:正常,2:停用)，默认值1")
     private Integer status;
 
+    /**
+     * 方法类型（GET、POST等）
+     */
+    @Schema(description = "方法类型（GET、POST等）")
+    private String methodType;
+
 }

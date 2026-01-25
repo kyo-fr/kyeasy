@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.platformInfo.dto.PlatformInfoDto;
@@ -41,6 +42,7 @@ public class PlatformSocializeController {
 
     @GetMapping("page")
     @Operation(summary = "分页",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:page')")
     public Result<PageResult<PlatformSocializeDto>> page(@ParameterObject @Valid PlatformSocializeQuery query){
         PageResult<PlatformSocializeDto> page = platformSocializeService.loadList(query);
@@ -51,6 +53,7 @@ public class PlatformSocializeController {
 
     @Operation(summary = "获取所有",hidden = true)
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:all')")
     public  Result<List<PlatformSocializeDto>> all(){
         List<PlatformSocializeDto> all = platformSocializeService.loadAll();
@@ -66,6 +69,7 @@ public class PlatformSocializeController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:info')")
     public Result<PlatformSocializeDto> get(@PathVariable("id") String id){
          PlatformSocializeDto dto= platformSocializeService.loadById(id);
@@ -75,6 +79,7 @@ public class PlatformSocializeController {
 
     @PostMapping
     @Operation(summary = "保存/更新(id必传)")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:save')")
     public Result<String> save(@RequestBody @Valid PlatformSocializeDto dto){
         platformSocializeService.create(dto);
@@ -83,6 +88,7 @@ public class PlatformSocializeController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:update')")
     public Result<String> update(@RequestBody @Valid PlatformSocializeDto dto){
         platformSocializeService.update(dto);
@@ -98,6 +104,7 @@ public class PlatformSocializeController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformSocialize:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         platformSocializeService.deleteById(id);
@@ -106,6 +113,7 @@ public class PlatformSocializeController {
 
     @GetMapping("")
     @Operation(summary = "获取平台社交信息")
+    @RequireUrlPermission
     public Result<PlatformSocializeDto> getInfoByUserId(){
         PlatformSocializeDto dto= platformSocializeService.getInfoByUserId();
         return Result.success(dto);

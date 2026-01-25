@@ -2,14 +2,20 @@ package org.ares.cloud.user.internal;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Resource;
-import org.ares.cloud.api.user.dto.ChangePasswordReq;
-import org.ares.cloud.api.user.dto.RecoverPasswordRequest;
-import org.ares.cloud.api.user.dto.UserDto;
+import org.ares.cloud.api.user.dto.*;
 import org.ares.cloud.exception.RpcCallException;
+import org.ares.cloud.user.entity.SysClassificationUrlEntity;
+import org.ares.cloud.user.entity.SysUserRoleEntity;
+import org.ares.cloud.user.service.SysClassificationUrlService;
+import org.ares.cloud.user.service.SysUserRoleService;
 import org.ares.cloud.user.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author hugo
@@ -22,6 +28,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserInternalController {
     @Resource
     private UserService userService;
+
+    @Resource
+    private SysUserRoleService sysUserRoleService;
+
+    @Resource
+    private SysClassificationUrlService sysClassificationUrlService;
 
     /**
      * 根据账号获取用户
@@ -130,5 +142,41 @@ public class UserInternalController {
     @GetMapping("get_all_by_account")
     public UserDto loadAllByAccount(@RequestParam("account") String account) {
         return userService.loadAllByAccount(account);
+    }
+
+    /**
+     * 根据用户ID获取用户角色（用于权限校验）
+     * @param userId 用户ID
+     * @return 用户角色信息
+     */
+    @Hidden
+    @GetMapping("permission/role")
+    public SysUserRoleDto getRoleByUserId(@RequestParam("userId") String userId) {
+        SysUserRoleEntity entity = sysUserRoleService.getRoleIdsByUserId(userId);
+        if (entity == null) {
+            return null;
+        }
+        SysUserRoleDto dto = new SysUserRoleDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
+    }
+
+    /**
+     * 根据角色ID获取URL列表（用于权限校验）
+     * @param roleId 角色ID
+     * @return URL列表
+     */
+    @Hidden
+    @GetMapping("permission/urls")
+    public List<SysClassificationUrlDto> getUrlsByRoleId(@RequestParam("roleId") String roleId) {
+        List<SysClassificationUrlEntity> entityList = sysClassificationUrlService.selectUrlsByRoleId(roleId);
+        if (entityList == null || entityList.isEmpty()) {
+            return List.of();
+        }
+        return entityList.stream().map(entity -> {
+            SysClassificationUrlDto dto = new SysClassificationUrlDto();
+            BeanUtils.copyProperties(entity, dto);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

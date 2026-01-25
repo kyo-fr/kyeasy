@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.springdoc.core.annotations.ParameterObject;
@@ -40,6 +41,7 @@ public class PlatformApprovalRecordController {
 
     @GetMapping("page")
     @Operation(summary = "分页",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:page')")
     public Result<PageResult<PlatformApprovalRecordDto>> page(@ParameterObject @Valid PlatformApprovalRecordQuery query){
         PageResult<PlatformApprovalRecordDto> page = platformApprovalRecordService.loadList(query);
@@ -57,6 +59,7 @@ public class PlatformApprovalRecordController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:info')")
     public Result<PlatformApprovalRecordDto> get(@PathVariable("id") String id){
          PlatformApprovalRecordDto dto= platformApprovalRecordService.loadById(id);
@@ -66,6 +69,7 @@ public class PlatformApprovalRecordController {
 
     @PostMapping
     @Operation(summary = "保存",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:save')")
     public Result<String> save(@RequestBody @Valid PlatformApprovalRecordDto dto){
         platformApprovalRecordService.create(dto);
@@ -74,6 +78,7 @@ public class PlatformApprovalRecordController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:update')")
     public Result<String> update(@RequestBody @Valid PlatformApprovalRecordDto dto){
         platformApprovalRecordService.update(dto);
@@ -89,6 +94,7 @@ public class PlatformApprovalRecordController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         platformApprovalRecordService.deleteById(id);
@@ -99,6 +105,7 @@ public class PlatformApprovalRecordController {
 
     @PostMapping("/updatePlatformApprovalRecord")
     @Operation(summary = "商户存储消耗变更")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:platformApprovalRecord:update')")
     public Result<String> updatePlatformApprovalRecord(@RequestBody @Valid PlatformApprovalRecordDto dto){
         platformApprovalRecordService.updatePlatformApprovalRecord(dto);
@@ -108,6 +115,7 @@ public class PlatformApprovalRecordController {
 
     @GetMapping("/getAvailableStorage")
     @Operation(summary = "获取商户存储")
+    @RequireUrlPermission
     public Result<Long> getAvailableStorage(@RequestParam @Valid String tenantId){
         Long availableStorage = platformApprovalRecordService.getAvailableStorage(tenantId);
         return Result.success(availableStorage);

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.springdoc.core.annotations.ParameterObject;
@@ -40,6 +41,7 @@ public class PlatformInfoController {
 
     @GetMapping("page")
     @Operation(summary = "分页",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformInfo:page')")
     public Result<PageResult<PlatformInfoDto>> page(@ParameterObject @Valid PlatformInfoQuery query){
         PageResult<PlatformInfoDto> page = platformInfoService.loadList(query);
@@ -50,6 +52,7 @@ public class PlatformInfoController {
 
     @Operation(summary = "获取所有",hidden = true)
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('platformInfo:PlatformInfo:all')")
     public  Result<List<PlatformInfoDto>> all(){
         List<PlatformInfoDto> all = platformInfoService.loadAll();
@@ -65,6 +68,7 @@ public class PlatformInfoController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformInfo:info')")
     public Result<PlatformInfoDto> get(@PathVariable("id") String id){
          PlatformInfoDto dto= platformInfoService.loadById(id);
@@ -74,6 +78,7 @@ public class PlatformInfoController {
 
     @PostMapping
     @Operation(summary = "保存/更新(传id)")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformInfo:save')")
     public Result<String> save(@RequestBody @Valid PlatformInfoDto dto){
         platformInfoService.create(dto);
@@ -82,6 +87,7 @@ public class PlatformInfoController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformInfo:update')")
     public Result<String> update(@RequestBody @Valid PlatformInfoDto dto){
         platformInfoService.update(dto);
@@ -97,6 +103,7 @@ public class PlatformInfoController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformInfo:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         platformInfoService.deleteById(id);
@@ -106,6 +113,7 @@ public class PlatformInfoController {
 
     @GetMapping("")
     @Operation(summary = "获取平台信息")
+    @RequireUrlPermission
     public Result<PlatformInfoDto> getInfoByUserId(){
         PlatformInfoDto dto= platformInfoService.getInfoByUserId();
         return Result.success(dto);
