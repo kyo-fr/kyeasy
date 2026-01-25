@@ -1,4 +1,4 @@
-package org.ares.cloud.user.annotation;
+package org.ares.cloud.api.user.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
