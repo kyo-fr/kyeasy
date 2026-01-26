@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.springdoc.core.annotations.ParameterObject;
@@ -72,6 +73,7 @@ public class InvoiceQueryController {
      */
     @GetMapping("/merchant/query")
     @Operation(summary = "商户查询发票列表")
+    @RequireUrlPermission
     public Result<PageResult<MerchantInvoiceDTO>> merchantQuery(@ParameterObject @Valid InvoiceQuery query) {
         PageResult<MerchantInvoiceDTO> page = invoiceQueryService.getMerchantInvoices(query);
         return Result.success(page);

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.UserAgentUtils;
@@ -78,6 +79,7 @@ public class ProductBaseInfoController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:ProductBaseInfo:save')")
     public Result<String> save(@RequestBody @Valid ProductBaseInfoDto dto){
         productBaseInfoService.create(dto);
@@ -86,6 +88,7 @@ public class ProductBaseInfoController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductBaseInfo:update')")
     public Result<String> update(@RequestBody @Valid ProductBaseInfoDto dto){
         productBaseInfoService.update(dto);
@@ -101,6 +104,7 @@ public class ProductBaseInfoController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductBaseInfo:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         productBaseInfoService.deleteById(id);
@@ -109,6 +113,7 @@ public class ProductBaseInfoController {
 
     @PostMapping("/updateProductByStatus")
     @Operation(summary = "商品上下架")
+    @RequireUrlPermission
     public Result<String> updateProductByStatus(@RequestParam("isEnable")@Schema(description = "是否上下架 enable-上架;not_enable-下架") String isEnable,@RequestParam("productId") @Schema(description = "商品id") String productId){
         productBaseInfoService.updateProductByStatus(isEnable,productId);
         return Result.success();

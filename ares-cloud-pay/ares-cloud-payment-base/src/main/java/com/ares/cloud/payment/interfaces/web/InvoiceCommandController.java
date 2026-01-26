@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.model.Result;
 // import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class InvoiceCommandController {
      */
     @PostMapping("/merchant")
     @Operation(summary = "商户开票")
+    @RequireUrlPermission
     public Result<String> merchantInvoice(@RequestBody @Valid MerchantInvoiceCommand command) {
         String invoiceId = invoiceCommandService.generateMerchantInvoice(command);
         return Result.success(invoiceId);
@@ -50,6 +52,7 @@ public class InvoiceCommandController {
     )
     @PostMapping("void")
     @Operation(summary = "作废发票")
+    @RequireUrlPermission
     public Result<String> voidInvoice(@RequestBody VoidInvoiceCommand command) {
         boolean result = invoiceCommandService.voidInvoice(command);
         return result ? Result.success() : Result.error("作废失败");

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.product.dto.MerchantSubSpecificationDto;
@@ -36,6 +37,7 @@ public class MerchantSubSpecificationController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:ProductSubSpecification:page')")
     public Result<PageResult<MerchantSubSpecificationDto>> page(@ParameterObject @Valid MerchantSubSpecificationQuery query){
         PageResult<MerchantSubSpecificationDto> page = merchantSubSpecificationService.loadList(query);
@@ -46,6 +48,7 @@ public class MerchantSubSpecificationController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:ProductSubSpecification:all')")
     public  Result<List<MerchantSubSpecificationDto>> all(){
         List<MerchantSubSpecificationDto> all = merchantSubSpecificationService.loadAll();
@@ -61,6 +64,7 @@ public class MerchantSubSpecificationController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductSubSpecification:info')")
     public Result<MerchantSubSpecificationDto> get(@PathVariable("id") String id){
          MerchantSubSpecificationDto dto= merchantSubSpecificationService.loadById(id);
@@ -70,6 +74,7 @@ public class MerchantSubSpecificationController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:ProductSubSpecification:save')")
     public Result<String> save(@RequestBody @Valid MerchantSubSpecificationDto dto){
         merchantSubSpecificationService.create(dto);
@@ -78,6 +83,7 @@ public class MerchantSubSpecificationController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductSubSpecification:update')")
     public Result<String> update(@RequestBody @Valid MerchantSubSpecificationDto dto){
         merchantSubSpecificationService.update(dto);
@@ -93,6 +99,7 @@ public class MerchantSubSpecificationController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductSubSpecification:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantSubSpecificationService.deleteById(id);

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.product.dto.MerchantWarehouseSeatDto;
@@ -36,6 +37,7 @@ public class MerchantWarehouseSeatController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchant_warehouse_seat:page')")
     public Result<PageResult<MerchantWarehouseSeatDto>> page(@ParameterObject @Valid MerchantWarehouseSeatQuery query){
         PageResult<MerchantWarehouseSeatDto> page = merchantWarehouseSeatService.loadList(query);
@@ -46,6 +48,7 @@ public class MerchantWarehouseSeatController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:merchant_warehouse_seat:all')")
     public  Result<List<MerchantWarehouseSeatDto>> all(){
         List<MerchantWarehouseSeatDto> all = merchantWarehouseSeatService.loadAll();
@@ -61,6 +64,7 @@ public class MerchantWarehouseSeatController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchant_warehouse_seat:info')")
     public Result<MerchantWarehouseSeatDto> get(@PathVariable("id") String id){
         MerchantWarehouseSeatDto dto= merchantWarehouseSeatService.loadById(id);
@@ -70,6 +74,7 @@ public class MerchantWarehouseSeatController {
 
     @PostMapping
     @Operation(summary = "保存",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchant_warehouse_seat:save')")
     public Result<String> save(@RequestBody @Valid MerchantWarehouseSeatDto dto){
         merchantWarehouseSeatService.create(dto);
@@ -78,6 +83,7 @@ public class MerchantWarehouseSeatController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchant_warehouse_seat:update')")
     public Result<String> update(@RequestBody @Valid MerchantWarehouseSeatDto dto){
         merchantWarehouseSeatService.update(dto);
@@ -93,6 +99,7 @@ public class MerchantWarehouseSeatController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchant_warehouse_seat:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantWarehouseSeatService.deleteById(id);
@@ -102,6 +109,7 @@ public class MerchantWarehouseSeatController {
 
     @PostMapping("/upsert")
     @Operation(summary = "保存/更新")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:merchant_warehouse_seat:save')")
     public Result<String> upsert(@RequestBody @Valid MerchantWarehouseSeatDto dto){
         merchantWarehouseSeatService.upsert(dto);

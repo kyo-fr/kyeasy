@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.ares.cloud.api.payment.command.GenericTransferCommand;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.model.Result;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,7 @@ public class TransferController {
      */
     @PostMapping("/merchant-to-user")
     @Operation(summary = "商户向用户发放礼物点", description = "商户向用户发放礼物点、奖励、佣金等")
+    @RequireUrlPermission
     public Result<TransferResultDTO> merchantToUserPayment(
             @Parameter(description = "发放请求参数", required = true)
             @Valid @RequestBody MerchantToUserPaymentCommand command) {
@@ -67,6 +69,7 @@ public class TransferController {
      */
     @PostMapping("/merchant/recharge")
     @Operation(summary = "商户充值", description = "从平台商户向普通商户充值")
+    @RequireUrlPermission
     public Result<TransferResultDTO> merchantRecharge(
             @Parameter(description = "充值请求参数", required = true)
             @Valid @RequestBody MerchantRechargeCommand command) {
@@ -79,6 +82,7 @@ public class TransferController {
      */
     @PostMapping("/merchant/deduction")
     @Operation(summary = "商户回收", description = "从普通商户向平台商户回收资金")
+    @RequireUrlPermission
     public Result<TransferResultDTO> merchantDeduction(
             @Parameter(description = "回收请求参数", required = true)
             @Valid @RequestBody MerchantDeductionCommand command) {

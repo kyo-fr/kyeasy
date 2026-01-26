@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.query.Query;
@@ -27,6 +28,7 @@ public class SysClassificationUrlController {
 
     @PostMapping(value = "/add")
     @Operation(summary = "添加分类URL")
+    @RequireUrlPermission
     public Result<String> save(@RequestBody @Valid SysClassificationUrlEntity entity) {
         sysClassificationUrlService.save(entity);
         return Result.success();
@@ -34,6 +36,7 @@ public class SysClassificationUrlController {
 
     @PostMapping(value = "/delete-by-id")
     @Operation(summary = "根据ID删除分类URL")
+    @RequireUrlPermission
     public Result<String> delete(@RequestBody @Valid SysClassificationUrlEntity entity) {
         sysClassificationUrlService.removeById(entity.getId());
         return Result.success();
@@ -41,6 +44,7 @@ public class SysClassificationUrlController {
 
     @GetMapping(value = "/page")
     @Operation(summary = "分页查询分类URL关系列表")
+    @RequireUrlPermission
     public Result<PageResult<SysClassificationUrlEntity>> page(@ParameterObject @Valid Query query) {
         PageResult<SysClassificationUrlEntity> page = sysClassificationUrlService.pageList(query);
         return Result.success(page);

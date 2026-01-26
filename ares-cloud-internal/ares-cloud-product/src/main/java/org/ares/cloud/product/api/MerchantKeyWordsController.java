@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.exception.RpcCallException;
@@ -37,6 +38,7 @@ public class MerchantKeyWordsController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:MerchantKeyWords:page')")
     public Result<PageResult<MerchantKeyWordsDto>> page(@ParameterObject @Valid MerchantKeyWordsQuery query){
         PageResult<MerchantKeyWordsDto> page = merchantKeyWordsService.loadList(query);
@@ -46,6 +48,7 @@ public class MerchantKeyWordsController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:MerchantKeyWords:all')")
     public  Result<List<MerchantKeyWordsDto>> all(){
         List<MerchantKeyWordsDto> all = merchantKeyWordsService.loadAll();
@@ -61,6 +64,7 @@ public class MerchantKeyWordsController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:MerchantKeyWords:info')")
     public Result<MerchantKeyWordsDto> get(@PathVariable("id") String id){
          MerchantKeyWordsDto dto= merchantKeyWordsService.loadById(id);
@@ -70,6 +74,7 @@ public class MerchantKeyWordsController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:MerchantKeyWords:save')")
     public Result<String> save(@RequestBody @Valid MerchantKeyWordsDto dto) {
         try {
@@ -82,6 +87,7 @@ public class MerchantKeyWordsController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:MerchantKeyWords:update')")
     public Result<String> update(@RequestBody @Valid MerchantKeyWordsDto dto){
          merchantKeyWordsService.update(dto);
@@ -97,6 +103,7 @@ public class MerchantKeyWordsController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:MerchantKeyWords:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantKeyWordsService.deleteById(id);

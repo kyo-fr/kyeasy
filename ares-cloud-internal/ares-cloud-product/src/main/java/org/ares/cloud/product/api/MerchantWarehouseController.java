@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.product.dto.MerchantWarehouseDto;
@@ -37,6 +38,7 @@ public class MerchantWarehouseController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchantWarehouse:page')")
     public Result<PageResult<MerchantWarehouseVo>> page(@ParameterObject @Valid MerchantWarehouseQuery query){
         PageResult<MerchantWarehouseVo> page = merchantWarehouseService.loadList(query);
@@ -47,6 +49,7 @@ public class MerchantWarehouseController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:merchantWarehouse:all')")
     public  Result<List<MerchantWarehouseDto>> all(){
         List<MerchantWarehouseDto> all = merchantWarehouseService.loadAll();
@@ -62,6 +65,7 @@ public class MerchantWarehouseController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantWarehouse:info')")
     public Result<MerchantWarehouseDto> get(@PathVariable("id") String id){
          MerchantWarehouseDto dto= merchantWarehouseService.loadById(id);
@@ -71,6 +75,7 @@ public class MerchantWarehouseController {
 
     @PostMapping
     @Operation(summary = "保存",hidden = true)
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchantWarehouse:save')")
     public Result<String> save(@RequestBody @Valid MerchantWarehouseDto dto){
         merchantWarehouseService.create(dto);
@@ -79,6 +84,7 @@ public class MerchantWarehouseController {
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantWarehouse:update')")
     public Result<String> update(@RequestBody @Valid MerchantWarehouseDto dto){
         merchantWarehouseService.update(dto);
@@ -94,6 +100,7 @@ public class MerchantWarehouseController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantWarehouse:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantWarehouseService.deleteById(id);
@@ -104,6 +111,7 @@ public class MerchantWarehouseController {
 
     @PostMapping("/upsert")
     @Operation(summary = "保存/更新")
+    @RequireUrlPermission
     public Result<String> upsert(@RequestBody @Valid MerchantWarehouseDto dto){
         merchantWarehouseService.upsert(dto);
         return Result.success();

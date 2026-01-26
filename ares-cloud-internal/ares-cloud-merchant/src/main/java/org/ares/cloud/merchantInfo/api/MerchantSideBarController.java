@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.UserAgentUtils;
@@ -54,6 +55,7 @@ public class MerchantSideBarController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('merchantInfo:MerchantSideBar:all')")
     public  Result<List<MerchantSideBarDto>> all(){
         List<MerchantSideBarDto> all = merchantSideBarService.loadAll();
@@ -69,6 +71,7 @@ public class MerchantSideBarController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantSideBar:info')")
     public Result<MerchantSideBarDto> get(@PathVariable("id") String id){
          MerchantSideBarDto dto= merchantSideBarService.loadById(id);
@@ -78,6 +81,7 @@ public class MerchantSideBarController {
 
     @PostMapping
     @Operation(summary = "侧栏批量保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('merchantInfo:MerchantSideBar:save')")
     public Result<String> save(@RequestBody List<MerchantSideBarDto> dto){
         merchantSideBarService.create(dto);
@@ -86,6 +90,7 @@ public class MerchantSideBarController {
 
     @PutMapping
     @Operation(summary = "侧栏批量修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantSideBar:update')")
     public Result<String> update(@RequestBody @Valid List<MerchantSideBarDto> dto){
         merchantSideBarService.update(dto);
@@ -101,6 +106,7 @@ public class MerchantSideBarController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantSideBar:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantSideBarService.deleteById(id);

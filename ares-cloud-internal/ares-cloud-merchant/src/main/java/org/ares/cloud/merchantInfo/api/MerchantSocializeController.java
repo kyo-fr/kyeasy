@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.UserAgentUtils;
@@ -89,6 +90,7 @@ public class MerchantSocializeController {
 
     @PostMapping
     @Operation(summary = "社交保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('merchantInfo:MerchantSocialize:save')")
     public Result<String> save(@RequestBody @Validated MerchantSocializeDto dto){
         merchantSocializeService.create(dto);
@@ -112,6 +114,7 @@ public class MerchantSocializeController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantSocialize:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantSocializeService.deleteById(id);

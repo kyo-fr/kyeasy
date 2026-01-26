@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.product.dto.MerchantMarkingDto;
@@ -36,6 +37,7 @@ public class MerchantMarkingController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchantMarking:page')")
     public Result<PageResult<MerchantMarkingDto>> page(@ParameterObject @Valid MerchantMarkingQuery query){
         PageResult<MerchantMarkingDto> page = merchantMarkingService.loadList(query);
@@ -46,6 +48,7 @@ public class MerchantMarkingController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
+    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('product:merchantMarking:all')")
     public  Result<List<MerchantMarkingDto>> all(){
         List<MerchantMarkingDto> all = merchantMarkingService.loadAll();
@@ -61,6 +64,7 @@ public class MerchantMarkingController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantMarking:info')")
     public Result<MerchantMarkingDto> get(@PathVariable("id") String id){
          MerchantMarkingDto dto= merchantMarkingService.loadById(id);
@@ -70,6 +74,7 @@ public class MerchantMarkingController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:merchantMarking:save')")
     public Result<String> save(@RequestBody @Valid MerchantMarkingDto dto){
         merchantMarkingService.create(dto);
@@ -78,6 +83,7 @@ public class MerchantMarkingController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantMarking:update')")
     public Result<String> update(@RequestBody @Valid MerchantMarkingDto dto){
         merchantMarkingService.update(dto);
@@ -93,6 +99,7 @@ public class MerchantMarkingController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:merchantMarking:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantMarkingService.deleteById(id);

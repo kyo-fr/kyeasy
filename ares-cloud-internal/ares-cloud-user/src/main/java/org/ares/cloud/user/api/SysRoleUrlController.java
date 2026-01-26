@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.api.user.dto.SysRoleUrlDto;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
@@ -30,6 +31,7 @@ public class SysRoleUrlController {
 
     @GetMapping(value = "/page")
     @Operation(summary = "分页查询角色URL关系列表")
+    @RequireUrlPermission
     public Result<PageResult<SysRoleUrlEntity>> page(@ParameterObject @Valid Query query) {
         PageResult<SysRoleUrlEntity> page = sysRoleUrlService.pageList(query);
         return Result.success(page);
@@ -37,6 +39,7 @@ public class SysRoleUrlController {
 
     @PostMapping(value = "/update-url-and-role")
     @Operation(summary = "编辑角色URL关系")
+    @RequireUrlPermission
     public Result<String> update(@RequestBody @Valid SysRoleUrlEntity entity) {
         sysRoleUrlService.updateUrlAndRole(entity);
         return Result.success();

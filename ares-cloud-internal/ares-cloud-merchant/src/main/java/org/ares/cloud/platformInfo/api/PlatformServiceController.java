@@ -47,7 +47,6 @@ public class PlatformServiceController {
 
     @Operation(summary = "获取所有")
     @GetMapping("/all")
-    @RequireUrlPermission
     // @PreAuthorize("hasAuthority('platformInfo:PlatformService:all')")
     public  Result<List<PlatformServiceDto>> all(){
         List<PlatformServiceDto> all = platformServiceService.loadAll();
@@ -63,7 +62,6 @@ public class PlatformServiceController {
     )
     @GetMapping("{id}")
     @Operation(summary = "详情")
-    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('platformInfo:PlatformService:info')")
     public Result<PlatformServiceDto> get(@PathVariable("id") String id){
          PlatformServiceDto dto= platformServiceService.loadById(id);

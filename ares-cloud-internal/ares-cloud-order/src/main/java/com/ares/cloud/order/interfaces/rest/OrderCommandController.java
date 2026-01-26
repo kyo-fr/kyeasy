@@ -5,6 +5,7 @@ import com.ares.cloud.order.domain.model.aggregate.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.api.order.commod.CreateOrderCommand;
 import com.ares.cloud.order.application.service.OrderApplicationService;
@@ -69,6 +70,7 @@ public class OrderCommandController {
             description = "商户自配送时，骑手接单操作。接单后订单状态变更为已接单，等待骑手开始配送。"
     )
     @PutMapping("/delivery/accept")
+    @RequireUrlPermission
     public Result<String> acceptDelivery(@RequestBody AcceptDeliveryCommand command) {
         orderApplicationService.acceptDelivery(command);
         return Result.success();
@@ -79,6 +81,7 @@ public class OrderCommandController {
             description = "商户自配送时，骑手接单后开始配送操作。开始配送后订单状态变更为配送中。"
     )
     @PutMapping("/{orderId}/delivery/start/merchant")
+    @RequireUrlPermission
     public Result<String> startMerchantDelivery(@PathVariable String orderId) {
         orderApplicationService.startMerchantDelivery(orderId);
         return Result.success();
@@ -89,6 +92,7 @@ public class OrderCommandController {
             description = "三方配送时，直接开始配送操作。开始配送后订单状态变更为配送中。"
     )
     @PutMapping("/delivery/start/third-party")
+    @RequireUrlPermission
     public Result<String> startThirdPartyDelivery(@RequestBody StartThirdPartyDeliveryCommand command) {
         orderApplicationService.startThirdPartyDelivery(command);
         return Result.success();
@@ -97,6 +101,7 @@ public class OrderCommandController {
 
     @Operation(summary = "完成配送")
     @PutMapping("/{orderId}/delivery/complete")
+    @RequireUrlPermission
     public Result<String> completeDelivery(@PathVariable(name="orderId") String orderId) {
         orderApplicationService.completeDelivery(orderId);
         return Result.success();

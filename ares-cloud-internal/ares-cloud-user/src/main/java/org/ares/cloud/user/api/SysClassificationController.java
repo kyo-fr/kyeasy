@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.api.user.dto.SysClassificationDto;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.user.entity.SysClassificationEntity;
@@ -28,6 +29,7 @@ public class SysClassificationController {
 
     @GetMapping("/page")
     @Operation(summary = "分类树形结构查询")
+    @RequireUrlPermission
     public Result<List<SysClassificationDto>> page() {
         List<SysClassificationDto> classificationTree = sysClassificationService.getClassificationTree();
         return Result.success(classificationTree);
@@ -35,6 +37,7 @@ public class SysClassificationController {
 
     @PostMapping(value = "/add")
     @Operation(summary = "添加分类")
+    @RequireUrlPermission
     public Result<String> save(@RequestBody @Valid SysClassificationEntity entity) {
         sysClassificationService.save(entity);
         return Result.success();
@@ -42,6 +45,7 @@ public class SysClassificationController {
 
     @PostMapping("/delete-by-id")
     @Operation(summary = "根据ID删除分类")
+    @RequireUrlPermission
     public Result<String> delete(@RequestBody @Valid SysClassificationEntity entity) {
         sysClassificationService.removeById(entity.getId());
         return Result.success();

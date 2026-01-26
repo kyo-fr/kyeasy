@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.UserAgentUtils;
@@ -84,6 +85,7 @@ public class ProductTypeController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('product:ProductType:save')")
     public Result<String> save(@RequestBody @Valid ProductTypeDto dto){
         productTypeService.create(dto);
@@ -92,6 +94,7 @@ public class ProductTypeController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductType:update')")
     public Result<String> update(@RequestBody @Valid ProductTypeDto dto){
         productTypeService.update(dto);
@@ -107,6 +110,7 @@ public class ProductTypeController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('product:ProductType:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         productTypeService.deleteById(id);

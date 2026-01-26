@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.query.Query;
@@ -27,6 +28,7 @@ public class SysRoleController {
 
     @GetMapping(value = "/page")
     @Operation(summary = "分页查询角色列表")
+    @RequireUrlPermission
     public Result<PageResult<SysRoleEntity>> page(@ParameterObject @Valid Query query) {
         PageResult<SysRoleEntity> page = sysRoleService.pageList(query);
         return Result.success(page);
@@ -34,6 +36,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/add-role")
     @Operation(summary = "添加角色")
+    @RequireUrlPermission
     public Result<String> save(@RequestBody @Valid SysRoleEntity entity) {
         sysRoleService.save(entity);
         return Result.success();
@@ -41,6 +44,7 @@ public class SysRoleController {
 
     @PostMapping("/delete-role")
     @Operation(summary = "根据ID删除角色")
+    @RequireUrlPermission
     public Result<String> delete(@RequestBody SysRoleEntity entity) {
         sysRoleService.removeById(entity.getId());
         return Result.success();

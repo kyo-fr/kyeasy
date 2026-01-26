@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.UserAgentUtils;
@@ -66,6 +67,7 @@ public class MerchantAdvertisedController {
 
     @PostMapping
     @Operation(summary = "保存")
+    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('merchantInfo:MerchantAdvertised:save')")
     public Result<String> save(@RequestBody @Valid MerchantAdvertisedDto dto){
         merchantAdvertisedService.create(dto);
@@ -74,6 +76,7 @@ public class MerchantAdvertisedController {
 
     @PutMapping
     @Operation(summary = "修改")
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantAdvertised:update')")
     public Result<String> update(@RequestBody @Valid MerchantAdvertisedDto dto){
         merchantAdvertisedService.update(dto);
@@ -89,6 +92,7 @@ public class MerchantAdvertisedController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除" ,hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:MerchantAdvertised:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantAdvertisedService.deleteById(id);

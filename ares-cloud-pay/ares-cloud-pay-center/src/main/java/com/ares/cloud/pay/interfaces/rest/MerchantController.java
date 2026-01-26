@@ -44,6 +44,7 @@ public class MerchantController {
 
     @PostMapping("/open")
     @Operation(summary = "开通商户", description = "通过商户ID、支持的支付区域和支付密码开通商户，需要提供确认密码。密码要求：至少6位字符，包含数字和字母，不能包含特殊字符")
+    @RequireUrlPermission
     public Result<String> openMerchant(@RequestBody OpenMerchantCommand command) {
         String merchantIdResult = merchantCommandHandler.handleOpenMerchant(command);
         return Result.success(merchantIdResult);
@@ -51,6 +52,7 @@ public class MerchantController {
 
     @PutMapping("/{merchantId}/status")
     @Operation(summary = "更新商户状态", description = "更新商户的状态（ACTIVE/FROZEN/CLOSED）")
+    @RequireUrlPermission
     public Result<String> updateMerchantStatus(@PathVariable String merchantId, @RequestBody UpdateMerchantStatusCommand command) {
         command.setMerchantId(merchantId);
         merchantCommandHandler.handleUpdateMerchantStatus(command);
@@ -59,6 +61,7 @@ public class MerchantController {
 
     @PutMapping("/{merchantId}/password")
     @Operation(summary = "更新商户密码", description = "更新商户的支付密码，需要提供旧密码和新密码")
+    @RequireUrlPermission
     public Result<String> updateMerchantPassword(@PathVariable String merchantId, @RequestBody UpdatePasswordCommand command) {
         command.setEntityType(UpdatePasswordCommand.EntityType.MERCHANT);
         command.setEntityId(merchantId);
@@ -68,6 +71,7 @@ public class MerchantController {
 
     @PutMapping("/{merchantId}/regions")
     @Operation(summary = "更新商户支持的支付区域", description = "更新商户支持的支付区域列表")
+    @RequireUrlPermission
     public Result<String> updateMerchantRegions(@PathVariable String merchantId, @RequestBody UpdateMerchantRegionsCommand command) {
         command.setMerchantId(merchantId);
         merchantCommandHandler.handleUpdateMerchantRegions(command);
@@ -76,6 +80,7 @@ public class MerchantController {
 
     @PostMapping("/{merchantId}/regenerate-key")
     @Operation(summary = "重新生成商户密钥", description = "重新生成商户的支付密钥，用于API调用签名")
+    @RequireUrlPermission
     public Result<String> regenerateMerchantKey(@PathVariable String merchantId) {
         RegenerateMerchantKeyCommand command = new RegenerateMerchantKeyCommand();
         command.setMerchantId(merchantId);
@@ -87,6 +92,7 @@ public class MerchantController {
 
     @GetMapping("/{merchantId}")
     @Operation(summary = "根据商户ID查询商户详情", description = "返回商户的详细信息，包括五个区域的钱包余额信息")
+    @RequireUrlPermission
     public Result<MerchantDetailDTO> getMerchantById(@PathVariable String merchantId) {
         MerchantDetailDTO merchant = merchantQueryHandler.getMerchantById(merchantId);
         return Result.success(merchant);
@@ -94,6 +100,7 @@ public class MerchantController {
 
     @GetMapping("/info")
     @Operation(summary = "查询商户详情", description = "返回当前用户的商户详细信息，包括五个区域的钱包余额信息")
+    @RequireUrlPermission
     public Result<MerchantDetailDTO> getMerchantByUserId() {
         String userId = ApplicationContext.getTenantId();
         MerchantDetailDTO merchant = merchantQueryHandler.getMerchantByUserId(userId);
@@ -102,6 +109,7 @@ public class MerchantController {
 
     @GetMapping("/by-merchant-no/{merchantNo}")
     @Operation(summary = "根据商户号查询商户详情", description = "返回商户的详细信息，包括五个区域的钱包余额信息")
+    @RequireUrlPermission
     public Result<MerchantDetailDTO> getMerchantByMerchantNo(@PathVariable String merchantNo) {
         MerchantDetailDTO merchant = merchantQueryHandler.getMerchantByMerchantNo(merchantNo);
         return Result.success(merchant);
@@ -109,6 +117,7 @@ public class MerchantController {
 
     @GetMapping("/by-phone")
     @Operation(summary = "根据国家编号和手机号查询商户详情", description = "返回商户的详细信息，包括五个区域的钱包余额信息")
+    @RequireUrlPermission
     public Result<MerchantDetailDTO> getMerchantByCountryCodeAndPhone(
             @RequestParam String countryCode, 
             @RequestParam String phone) {
@@ -118,6 +127,7 @@ public class MerchantController {
 
     @GetMapping
     @Operation(summary = "查询商户列表", description = "返回商户的摘要信息列表，不包含钱包余额信息")
+    @RequireUrlPermission
     public Result<PageResult<MerchantSummaryDTO>> getMerchantList(@ParameterObject @Valid EntityQuery query) {
         PageResult<MerchantSummaryDTO> result = merchantQueryHandler.getMerchantList(query);
         return Result.success(result);
@@ -127,6 +137,7 @@ public class MerchantController {
     
     @GetMapping("/flows")
     @Operation(summary = "查询商户交易流水", description = "查询当前商户的交易流水记录，包含交易对方的国家编号和手机号信息")
+    @RequireUrlPermission
     public Result<PageResult<AccountFlowDTO>> getMerchantAccountFlows(@ParameterObject @Valid AccountFlowQuery query) {
         PageResult<AccountFlowDTO> result = accountFlowQueryHandler.getMerchantAccountFlows(query);
         return Result.success(result);
@@ -134,6 +145,7 @@ public class MerchantController {
     
     @GetMapping("/{merchantId}/flows")
     @Operation(summary = "根据商户ID查询交易流水", description = "查询指定商户的交易流水记录，包含交易对方的国家编号和手机号信息")
+    @RequireUrlPermission
     public Result<PageResult<AccountFlowDTO>> getMerchantFlowsByMerchantId(@PathVariable String merchantId,@ParameterObject @Valid AccountFlowQuery query) {
         PageResult<AccountFlowDTO> result = accountFlowQueryHandler.getAccountFlowsByAccountId(merchantId, query);
         return Result.success(result);
@@ -150,6 +162,7 @@ public class MerchantController {
     
     @GetMapping("/statistics")
     @Operation(summary = "查询商户统计信息", description = "查询当前商户的统计信息，包括手续费、税费、各类收支明细等。支持按天/月/年查询，可按支付区域筛选")
+    @RequireUrlPermission
     public Result<MerchantStatistics> getMerchantStatistics(@ParameterObject @Valid MerchantStatisticsQuery query) {
         MerchantStatistics result = merchantQueryHandler.getMerchantStatistics(query);
         return Result.success(result);

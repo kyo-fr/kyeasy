@@ -10,6 +10,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.dto.PageResult;
 import org.ares.cloud.common.exception.RequestBadException;
@@ -89,12 +90,14 @@ public class MerchantInfoController {
 
     @PostMapping
     @Operation(summary = "商户信息更新")
+    @RequireUrlPermission
     public Result<MerchantInfoDto> save(@RequestBody @Valid MerchantInfoDto dto){
         return Result.success(merchantInfoService.create(dto));
     }
 
     @PutMapping
     @Operation(summary = "修改",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:商户:update')")
     public Result<String> update(@RequestBody @Valid MerchantInfoDto dto){
         merchantInfoService.update(dto);
@@ -110,6 +113,7 @@ public class MerchantInfoController {
     )
     @DeleteMapping("{id}")
     @Operation(summary = "根据id删除",hidden = true)
+    @RequireUrlPermission
     //@PreAuthorize("hasAuthority('merchantInfo:商户:del_by_id')")
     public Result<String> del(@PathVariable("id") String id){
         merchantInfoService.deleteById(id);
