@@ -37,7 +37,6 @@ public class PlatformServiceController {
 
     @GetMapping("page")
     @Operation(summary = "分页")
-    @RequireUrlPermission
    // @PreAuthorize("hasAuthority('platformInfo:PlatformService:page')")
     public Result<PageResult<PlatformServiceDto>> page(@ParameterObject @Valid PlatformServiceQuery query){
         PageResult<PlatformServiceDto> page = platformServiceService.loadList(query);

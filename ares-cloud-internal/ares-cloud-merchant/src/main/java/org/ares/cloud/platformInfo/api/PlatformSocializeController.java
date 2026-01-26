@@ -113,7 +113,6 @@ public class PlatformSocializeController {
 
     @GetMapping("")
     @Operation(summary = "获取平台社交信息")
-    @RequireUrlPermission
     public Result<PlatformSocializeDto> getInfoByUserId(){
         PlatformSocializeDto dto= platformSocializeService.getInfoByUserId();
         return Result.success(dto);

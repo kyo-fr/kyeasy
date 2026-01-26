@@ -130,14 +130,23 @@ public class SysRoleUrlServiceImpl extends BaseServiceImpl<SysRoleUrlRepository,
      */
     @Override
     public PageResult<SysRoleUrlEntity> pageList(Query query) {
+        List<String> urlIdList = new ArrayList<>();
+        if (StringUtils.isNoneBlank(query.getKeyword())) {
+            LambdaQueryWrapper<SysClassificationUrlEntity> urlWrapper = new LambdaQueryWrapper<>();
+            urlWrapper.eq(SysClassificationUrlEntity::getDeleted, 0);
+            urlWrapper.like(SysClassificationUrlEntity::getUrl, query.getKeyword());
+            List<SysClassificationUrlEntity> urlEntityList = sysClassificationUrlService.list(urlWrapper);
+            if (CollectionUtils.isNotEmpty(urlEntityList)) {
+                urlIdList = urlEntityList.stream().map(SysClassificationUrlEntity::getId).toList();
+            }
+        }
         // 第一步：构建查询条件，只查询 urlId 字段以减少数据传输
         LambdaQueryWrapper<SysRoleUrlEntity> wrapper = getWrapper(query);
         wrapper.eq(SysRoleUrlEntity::getDeleted, 0);
         // 如果有关键字，可以按角色ID或URL ID搜索
-        if (StringUtils.isNotBlank(query.getKeyword())) {
-            wrapper.and(w -> w.like(SysRoleUrlEntity::getRoleId, query.getKeyword())
-                    .or()
-                    .like(SysRoleUrlEntity::getUrlId, query.getKeyword()));
+        if (CollectionUtils.isNotEmpty(urlIdList)) {
+            List<String> finalUrlIdList = urlIdList;
+            wrapper.and(w -> w.in(SysRoleUrlEntity::getUrlId, finalUrlIdList));
         }
         // 只查询 urlId 字段，减少数据传输
         wrapper.select(SysRoleUrlEntity::getUrlId);

@@ -113,7 +113,6 @@ public class PlatformInfoController {
 
     @GetMapping("")
     @Operation(summary = "获取平台信息")
-    @RequireUrlPermission
     public Result<PlatformInfoDto> getInfoByUserId(){
         PlatformInfoDto dto= platformInfoService.getInfoByUserId();
         return Result.success(dto);
