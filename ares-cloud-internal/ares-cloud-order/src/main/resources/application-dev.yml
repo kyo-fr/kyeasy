@@ -29,6 +29,10 @@ spring:
             # 移除 url 配置，使用服务发现从 Nacos 中查找 base-service 服务
             connectTimeout: 10000  # 连接超时时间（毫秒）
             readTimeout: 60000    # 读取超时时间（毫秒）
+          user-service:
+            # 移除 url 配置，使用服务发现从 Nacos 中查找 user-service 服务
+            connectTimeout: 10000  # 连接超时时间（毫秒）
+            readTimeout: 60000    # 读取超时时间（毫秒）
   datasource:
     url: jdbc:oracle:thin:@test1_medium
     username: admin

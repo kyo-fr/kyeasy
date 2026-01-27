@@ -150,7 +150,7 @@ public class UserInternalController {
      * @return 用户角色信息
      */
     @Hidden
-    @GetMapping("permission/role")
+    @GetMapping("/permission/role")
     public SysUserRoleDto getRoleByUserId(@RequestParam("userId") String userId) {
         SysUserRoleEntity entity = sysUserRoleService.getRoleIdsByUserId(userId);
         if (entity == null) {
@@ -167,7 +167,7 @@ public class UserInternalController {
      * @return URL列表
      */
     @Hidden
-    @GetMapping("permission/urls")
+    @GetMapping("/permission/urls")
     public List<SysClassificationUrlDto> getUrlsByRoleId(@RequestParam("roleId") String roleId) {
         List<SysClassificationUrlEntity> entityList = sysClassificationUrlService.selectUrlsByRoleId(roleId);
         if (entityList == null || entityList.isEmpty()) {
