@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableAresServer
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"org.ares.cloud.api.base", "org.ares.cloud.api.auth", "org.ares.cloud.api.user"})
+@EnableFeignClients(basePackages = {"org.ares.cloud.api.base", "org.ares.cloud.api.auth", "org.ares.cloud.api.user", "org.ares.cloud.api.gateway"})
 @ComponentScan(basePackages = {"org.ares.cloud.**","org.ares.cloud.**"})
 @EnableConfigurationProperties({SuperAdminProperties.class, HsmProperties.class})
 public class UserApplication {

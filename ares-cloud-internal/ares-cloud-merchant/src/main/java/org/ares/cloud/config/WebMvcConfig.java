@@ -1,5 +1,6 @@
 package org.ares.cloud.config;
 
+import org.ares.cloud.api.gateway.GatewayPublicPathClient;
 import org.ares.cloud.api.user.UserPermissionClient;
 import org.ares.cloud.api.user.interceptor.UrlPermissionInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +17,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final UserPermissionClient userPermissionClient;
+    private final GatewayPublicPathClient gatewayPublicPathClient;
 
-    public WebMvcConfig(@Lazy UserPermissionClient userPermissionClient) {
+    public WebMvcConfig(@Lazy UserPermissionClient userPermissionClient,
+                        @Lazy GatewayPublicPathClient gatewayPublicPathClient) {
         this.userPermissionClient = userPermissionClient;
+        this.gatewayPublicPathClient = gatewayPublicPathClient;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册URL权限拦截器
-        UrlPermissionInterceptor urlPermissionInterceptor = new UrlPermissionInterceptor(userPermissionClient);
+        UrlPermissionInterceptor urlPermissionInterceptor = new UrlPermissionInterceptor(userPermissionClient, gatewayPublicPathClient);
         registry.addInterceptor(urlPermissionInterceptor)
                 .addPathPatterns("/**")  // 拦截所有请求
                 .excludePathPatterns(

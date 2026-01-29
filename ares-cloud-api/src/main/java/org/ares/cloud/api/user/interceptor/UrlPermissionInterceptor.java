@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.ares.cloud.api.gateway.GatewayPublicPathClient;
 import org.ares.cloud.api.user.UserPermissionClient;
 import org.ares.cloud.api.user.annotation.RequireUrlPermission;
 import org.ares.cloud.api.user.dto.SysClassificationUrlDto;
@@ -12,6 +13,7 @@ import org.ares.cloud.common.context.ApplicationContext;
 import org.ares.cloud.common.enums.ResponseCodeEnum;
 import org.ares.cloud.common.model.Result;
 import org.ares.cloud.common.utils.JsonUtils;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -27,9 +29,12 @@ import java.util.List;
 public class UrlPermissionInterceptor implements HandlerInterceptor {
 
     private final UserPermissionClient userPermissionClient;
+    private final GatewayPublicPathClient gatewayPublicPathClient;
 
-    public UrlPermissionInterceptor(UserPermissionClient userPermissionClient) {
+    public UrlPermissionInterceptor(UserPermissionClient userPermissionClient,
+                                    GatewayPublicPathClient gatewayPublicPathClient) {
         this.userPermissionClient = userPermissionClient;
+        this.gatewayPublicPathClient = gatewayPublicPathClient;
     }
 
     @Override
@@ -57,6 +62,16 @@ public class UrlPermissionInterceptor implements HandlerInterceptor {
         String requestUrl = request.getRequestURI();
         if (StringUtils.isBlank(requestUrl)) {
             return true;
+        }
+
+        // 通过 Feign 调用 gateway 服务获取公开路径，若当前请求为公开路径则直接放行
+        List<String> publicPaths = gatewayPublicPathClient.getPublicPaths();
+        if (CollectionUtil.isNotEmpty(publicPaths)) {
+            for (String pattern : publicPaths) {
+                if (StringUtils.isNotBlank(pattern) && pattern.contains(requestUrl)) {
+                    return true;
+                }
+            }
         }
 
         // 获取请求方法（GET、POST等）

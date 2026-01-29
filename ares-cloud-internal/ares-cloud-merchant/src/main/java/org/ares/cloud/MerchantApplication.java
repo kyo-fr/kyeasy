@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableAresServer
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = {"org.ares.cloud.api.base","org.ares.cloud.api.user","org.ares.cloud.api.order","org.ares.cloud.api.product","org.ares.cloud.api.merchant","org.ares.cloud.api.msg_center"})
+@EnableFeignClients(basePackages = {"org.ares.cloud.api.base","org.ares.cloud.api.user","org.ares.cloud.api.order","org.ares.cloud.api.product","org.ares.cloud.api.merchant","org.ares.cloud.api.msg_center","org.ares.cloud.api.gateway"})
 public class MerchantApplication {
 
     public static void main(String[] args) {

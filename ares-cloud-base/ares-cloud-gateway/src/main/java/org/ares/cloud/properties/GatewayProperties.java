@@ -17,7 +17,8 @@ public class GatewayProperties {
             "/webjars/**",
             "/doc.html",
             "/*/v3/api-docs",
-            "/*/api-docs/v3"
+            "/*/api-docs/v3",
+            "/internal/gateway/public-paths"  // 供其他服务通过 Feign 获取公开路径列表
     );
     /**
      * 公开的url
